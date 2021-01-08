@@ -1,0 +1,145 @@
+<%- include('partials/header') %>
+
+    <style>
+        .image-grid img {
+            margin-bottom: 1rem;
+        }
+        
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        
+        .panel-default {
+            border-color: #ddd;
+        }
+        
+        .panel-body {
+            padding: 15px;
+        }
+        
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+        
+        .image-grid img {
+            margin-bottom: .75rem;
+        }
+        
+        .center-block {
+            display: block;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        .my-container {
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 115px;
+        }
+        
+        .my-card {
+            margin: 0 15px;
+        }
+        
+        .card-group>.card:not(:first-child) {
+            border-radius: 0.25rem;
+        }
+        
+        .card-group>.card:not(:last-child) {
+            border-radius: 0.25rem;
+        }
+        
+        .card-group>.card+.card {
+            border-left: 1px solid rgba(0, 0, 0, .125);
+            margin-left: 15px;
+        }
+        
+        .card-group {
+            margin: 2rem 0rem;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        
+        a:hover {
+            color: #000;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <main class="my-container">
+        <h2>Pick the Images You Like!</h2>
+        <p>Click on the images you would like to purchase!</p>
+
+        <% let counter = 0 %>
+            <% let totalCounter = 0%>
+                <% images.forEach(function(image) { %>
+                    <% if (image.sellImg && String(image.ownerUserID) !== String(userID.toString())) { %>
+                        <% const caption = image.caption %>
+                            <% const imgData = image.img %>
+                                <% const imgBase64Data = imgData.data.toString('base64') %>
+
+                                    <% counter += 1 %>
+                                        <% totalCounter += 1 %>
+                                            <% if (counter === 1) { %>
+                                                <div class="card-group">
+                                                    <% } %>
+                                                        <div class="card my-card">
+                                                            <a href="/buy-img/<%= image._id %>" target="_self" style="margin: auto;">
+                                                                    <img class="card-img-top" src="data:<%= imgData.contentType %>;base64,<%= imgBase64Data %>" style="height: 200px; width: 275px; object-fit: contain; margin: auto; padding: 15px;">
+                                                                </a>
+                                                            <a href="/buy-img/<%= image._id %>" target="_self">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">Price:
+                                                                        <%= image.price %>
+                                                                    </h5>
+                                                                    <p class="card-text">
+                                                                        <% if ((image.caption.length) >= 35) { %>
+                                                                            <%= (image.caption).substring(0, 35) + "..." %>
+                                                                                <% } else { %>
+                                                                                    <%= image.caption %>
+                                                                                        <% } %>
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                            <div class="card-footer">
+                                                                <small class="text-muted">Uploaded <%= image.timeText %></small>
+                                                            </div>
+                                                        </div>
+
+                                                        <% if (counter === 4 || (images.length - totalCounter) == 1) { %>
+                                                            <% counter = 0 %>
+                                                </div>
+                                                <% } %>
+                                                    <% } %>
+                                                        <% }) %>
+    </main>
+
+    <script>
+        let count = $('.card-group')[$('.card-group').length - 1].children.length
+        if (count === 1) {
+            $('.card-group')[$('.card-group').length - 1].setAttribute("style", "width:25%")
+        } else if (count === 2) {
+            $('.card-group')[$('.card-group').length - 1].setAttribute("style", "width:50%")
+        } else if (count === 3) {
+            $('.card-group')[$('.card-group').length - 1].setAttribute("style", "width:75%")
+        } else {
+            $('.card-group')[$('.card-group').length - 1].setAttribute("style", "width:100%")
+        }
+    </script>
+
+    <%- include('partials/footer') %>

@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+    <style>
+        .my-container {
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+    </style>
+
+    <main>
+        <div class="jumbotron my-container bg-danger" style="padding-top: 115px;">
+            <h1 class="display-4" style="color: #fff;">Payment Failure.</h1>
+            <p class="lead" style="color: #fff;">There was an issue with your payment. Please try again.</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/account" role="button">Add credits</a>
+            </p>
+            <hr class="my-4">
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>

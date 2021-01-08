@@ -1,0 +1,180 @@
+<%- include('partials/header') %>
+
+    <style>
+        .image-grid img {
+            margin-bottom: 1rem;
+        }
+        
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        
+        .panel-default {
+            border-color: #ddd;
+        }
+        
+        .panel-body {
+            padding: 15px;
+        }
+        
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+        
+        .image-grid img {
+            margin-bottom: .75rem;
+        }
+        
+        .center-block {
+            display: block;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        .my-container {
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 120px;
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+        
+        a:hover {
+            color: #000;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <main class="my-container">
+        <h1>Search</h1>
+        <h6>Showing search results for the phrase "
+            <%= searchQuery %>"</h6>
+        <div class="row" style="margin-top: 20px;">
+            <h2>Your Images</h2>
+            <div class="row image-grid">
+                <% let ownImgCounter = 0 %>
+                    <% let sellImgCounter = 0 %>
+                        <% searchResults.reverse().forEach(function(image) { %>
+                            <% const imgBase64Data = image.img.data.toString('base64') %>
+                                <% if (!image.sellImg && (image.ownerUserID.toString() === userID.toString())) { %>
+                                    <% ownImgCounter += 1 %>
+                                        <div class="col-sm-3 col-md-3">
+                                            <div class="panel panel-default">
+                                                <!-- ADD CHECKBOX - show when select images is clicked -->
+                                                <div class="panel-body">
+                                                    <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <% if ((image.caption.length) >= 35) { %>
+                                                        <%= (image.caption).substring(0, 35) + "..." %>
+                                                            <% } else { %>
+                                                                <%= image.caption %>
+                                                                    <% } %>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    Uploaded:
+                                                    <%= image.timeText %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                            <% }) %>
+            </div>
+            <% if (ownImgCounter === 0) { %>
+                <div class="alert alert-dark" role="alert">
+                    You have no photos you own that match this query. Upload photos at the <a href="/account" class="alert-link">accounts page</a> to get started.
+                </div>
+                <% } %>
+
+                    <h2>Images For Sale</h2>
+                    <div class="row image-grid">
+                        <% searchResults.reverse().forEach(function(image) { %>
+                            <% const imgBase64Data = image.img.data.toString('base64') %>
+                                <% if (image.sellImg && !(image.ownerUserID.toString() === userID.toString())) { %>
+                                    <% sellImgCounter += 1 %>
+                                        <div class="col-sm-3 col-md-3">
+                                            <a href="/buy-img/<%= image._id %>" target="_self">
+                                                <div class="panel panel-default">
+                                                    <!-- ADD CHECKBOX - show when select images is clicked -->
+
+                                                    <div class="panel-body">
+                                                        <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                    </div>
+                                                    <div class="panel-footer">
+                                                        <% if ((image.caption.length) >= 35) { %>
+                                                            <%= (image.caption).substring(0, 35) + "..." %>
+                                                                <% } else { %>
+                                                                    <%= image.caption %>
+                                                                        <% } %>
+                                                    </div>
+                                                    <div class="panel-footer">
+                                                        Price:
+                                                        <%= image.price %>
+                                                    </div>
+                                                    <div class="panel-footer">
+                                                        Uploaded:
+                                                        <%= image.timeText %>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <% } else if (image.sellImg) { %>
+                                            <% sellImgCounter += 1 %>
+                                                <div class="col-sm-3 col-md-3">
+                                                    <div class="panel panel-default">
+                                                        <!-- ADD CHECKBOX - show when select images is clicked -->
+                                                        <div class="panel-body">
+                                                            <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                        </div>
+                                                        <div class="panel-footer">
+                                                            <% if ((image.caption.length) >= 35) { %>
+                                                                <%= (image.caption).substring(0, 35) + "..." %>
+                                                                    <% } else { %>
+                                                                        <%= image.caption %>
+                                                                            <% } %>
+                                                        </div>
+                                                        <div class="panel-footer">
+                                                            Price:
+                                                            <%= image.price %>
+                                                        </div>
+                                                        <div class="panel-footer">
+                                                            Uploaded:
+                                                            <%= image.timeText %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                                    <% }) %>
+                    </div>
+                    <% if (sellImgCounter === 0) { %>
+                        <div class="alert alert-dark" role="alert">
+                            There are no photos on ImageRepo that match this query. Upload photos at the <a href="/account" class="alert-link">accounts page</a> to get started.
+                        </div>
+                        <% } %>
+        </div>
+
+        <script>
+        </script>
+
+
+    </main>
+    <%- include('partials/footer') %>

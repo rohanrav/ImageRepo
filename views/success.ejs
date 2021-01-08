@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+    <style>
+        .my-container {
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        .image-grid img {
+            margin-bottom: 1rem;
+        }
+        
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        
+        .panel-default {
+            border-color: #ddd;
+        }
+        
+        .panel-body {
+            padding: 15px;
+        }
+        
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+        
+        .image-grid img {
+            margin-bottom: .75rem;
+        }
+        
+        .center-block {
+            display: block;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        h3 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, .125);
+            border-bottom: 1px solid rgba(0, 0, 0, .125);
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            padding-bottom: 1rem;
+        }
+        
+        .display-4 {
+            font-weight: 400;
+        }
+    </style>
+
+    <main class="">
+        <div class="jumbotron my-container bg-success" style="padding-top: 115px;">
+            <h1 class="display-4" style="color: #fff;">Success!</h1>
+            <p class="lead" style="color: #fff;">You successfully bought this photo! See the details below.</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/account" role="button">See your images!</a>
+            </p>
+            <hr class="my-4">
+        </div>
+
+        <div class="row my-container">
+            <div class="col-sm-6">
+                <h1>Image</h1>
+                <div class="panel panel-default">
+                    <!-- ADD CHECKBOX - show when select images is clicked -->
+                    <div class="panel-body">
+                        <a target="_self">
+                                <img style="width: 700px; height: 500px; object-fit: contain;" alt="" 
+                                class="img-responsive center-block img-styles" 
+                                src="data:<%= buyImg.img.contentType %>;base64,<%= buyImg.img.data.toString('base64') %>" /></a>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h1>Information</h1>
+                <h3>Caption:
+                    <span class="text-muted" style="font-weight: 300;"><%= buyImg.caption %></span>
+                </h3>
+                <h3>Price Paid:
+                    <span class="text-muted" style="font-weight: 300;"><%= buyImg.price %></span>
+                </h3>
+                <h3>
+                    Uploaded:
+                    <span class="text-muted" style="font-weight: 300;"><%= buyImg.timeText %></span>
+                </h3>
+                <form action="/home">
+                    <button type="submit" class="btn btn-lg btn-secondary" style="width: 100%; margin: 0 0 10px 0;">See More Images!</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
