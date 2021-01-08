@@ -224,6 +224,16 @@ app.get("/search", function(req, res) {
     res.render("search", { searchQuery: "test" })
 })
 
+app.get("/purchaseHistory", function(req, res) {
+    console.log(req.user.purchaseHistory)
+
+    let purchases = req.user.purchaseHistory;
+    purchases.forEach(function(purchase) {
+        purchase.timeText = getTimeDiffAndPrettyText(purchase.date).friendlyNiceText
+    })
+    res.render("purchaseHistory", { purchaseHistoryArr: purchases })
+})
+
 // POST REQUESTS
 
 app.post("/account", upload.single('avatar'), function(req, res, next) {
@@ -366,12 +376,30 @@ app.post("/buy-img/:imgID", function(req, res) {
             if (!err) {
                 User.findByIdAndUpdate(req.user._id, {
                     $inc: { credits: -buyImgPrice },
-                    $push: { ownImages: docs }
+                    $push: {
+                        ownImages: docs,
+                        purchaseHistory: {
+                            purchaseType: "Buy",
+                            price: buyImgPrice,
+                            caption: docs.caption,
+                            date: new Date(),
+                            img: docs.img
+                        }
+                    }
                 }, function(err) {
                     if (!err) {
                         User.findByIdAndUpdate(ImgOwnerID, {
                             $inc: { credits: buyImgPrice },
-                            $pull: { ownImages: { _id: buyImgID } }
+                            $pull: { ownImages: { _id: buyImgID } },
+                            $push: {
+                                purchaseHistory: {
+                                    purchaseType: "Sell",
+                                    price: buyImgPrice,
+                                    caption: docs.caption,
+                                    date: new Date(),
+                                    img: docs.img
+                                }
+                            }
                         }, function(err) {
                             if (!err) {
                                 // show success page 

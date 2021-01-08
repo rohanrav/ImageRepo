@@ -16,7 +16,14 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     credits: Number,
-    ownImages: [imagesSchema]
+    ownImages: [imagesSchema],
+    purchaseHistory: [{
+        purchaseType: String,
+        price: Number,
+        caption: String,
+        date: Date,
+        img: { data: Buffer, contentType: String },
+    }]
 });
 
 const User = new mongoose.model("User", userSchema)

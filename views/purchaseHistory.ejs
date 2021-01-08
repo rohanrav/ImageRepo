@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+    <style>
+        .my-container {
+            padding-right: 50px;
+            padding-left: 50px;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 115px;
+        }
+        
+        .image-grid img {
+            margin-bottom: 1rem;
+        }
+        
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        
+        .panel-default {
+            border-color: #ddd;
+        }
+        
+        .panel-body {
+            padding: 15px;
+        }
+        
+        .panel-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+    </style>
+    <main>
+        <div class="my-container">
+            <h1>Purchase History</h1>
+            <p>All of your image purchase history.</p>
+        </div>
+        <% let type = "" %>
+            <% purchaseHistoryArr.forEach(function(purchase) { %>
+                <% if (purchase.purchaseType === "Sell") {type = "Sold"} else if (purchase.purchaseType === "Buy") {type = "Bought"} %>
+                    <div class="row" style="padding: 10px 50px;">
+                        <div class="col-sm-7">
+                            <div class="panel panel-default" style="text-align: center;">
+                                <!-- ADD CHECKBOX - show when select images is clicked -->
+                                <div class="panel-body">
+                                    <a target="_self">
+                                    <img style="width: 400px; height: 286px; margin-bottom: 0; object-fit: contain;" alt="" 
+                                    class="img-responsive center-block img-styles" 
+                                    src="data:<%= purchase.img.contentType %>;base64,<%= purchase.img.data.toString('base64') %>" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <h2>Purchase Type:
+                                <%= type %>
+                            </h2>
+                            <h5>Caption:
+                                <%= purchase.caption %>
+                            </h5>
+                            <h5>Price:
+                                <%= purchase.price %>
+                            </h5>
+                            <h5>Date
+                                <%= type %>:
+                                    <%= purchase.timeText %>
+                            </h5>
+                        </div>
+                    </div>
+
+                    <% }) %>
+
+
+    </main>
+
+    <%- include('partials/footer') %>
