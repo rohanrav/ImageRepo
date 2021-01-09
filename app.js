@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 // Imports
+const path = require("path")
 const fs = require("fs")
 const express = require("express")
 const bodyParser = require("body-parser")
@@ -21,7 +22,7 @@ const { sortHome, sortReverseImageSearch, getTimeText } = require("./utils")
 // Express Initialization
 const app = express()
 
-app.use(express.static("public"))
+app.use(express.static(path.join(__dirname, "public")))
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({
     extended: true
