@@ -14,6 +14,7 @@ const upload = multer({ dest: 'uploads/' })
 const { getTimeDiffAndPrettyText, dateAdd } = require("./timeParsing")
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
+var Jimp = require('jimp');
 
 const app = express()
 
@@ -234,6 +235,13 @@ app.get("/purchaseHistory", function(req, res) {
     res.render("purchaseHistory", { purchaseHistoryArr: purchases })
 })
 
+app.get("/reverseImageSearch", function(req, res) {
+    res.render("reverseImageSearch", {
+        uploadPhoto: undefined,
+        searchResults: undefined
+    })
+})
+
 // POST REQUESTS
 
 app.post("/account", upload.single('avatar'), function(req, res, next) {
@@ -269,6 +277,58 @@ app.post("/account", upload.single('avatar'), function(req, res, next) {
                     res.redirect("/account")
                 }
             })
+    } else {
+        res.redirect("/login")
+    }
+})
+
+app.post("/reverseImageSearch", upload.single('avatar'), function(req, res, next) {
+    if (req.isAuthenticated()) {
+        Image.find({
+            $or: [
+                { sellImg: true },
+                { ownerUserID: req.user._id }
+            ]
+        }, function(err, docs) {
+            Jimp.read(__dirname + '/uploads/' + req.file.filename).then(async(uploadedImg) => {
+                for (i = 0; i < docs.length; i++) {
+                    const read = await Jimp.read(docs[i].img.data).then(async(iterImg) => {
+                        let distance = await Jimp.distance(uploadedImg, iterImg)
+                        let diff = await Jimp.diff(uploadedImg, iterImg).percent
+                        if (distance < 0.75 || diff < 0.75) {
+                            docs[i].difference = distance + diff
+                        } else {
+                            docs[i].difference = 100000000000000
+                        }
+                    })
+                }
+                docs = docs.sort(function(a, b) {
+                    if (a.difference < b.difference) {
+                        return -1
+                    } else if (a.difference > b.difference) {
+                        return 1
+                    } else {
+                        return 0
+                    }
+                })
+                docs = docs.slice(0, 3)
+                const uploadedImageToSend = Image({
+                    img: {
+                        data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
+                        contentType: req.file.mimetype
+                    }
+                })
+                docs.forEach(function(image) {
+                    image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
+                })
+                res.render("reverseImageSearch", {
+                    uploadPhoto: uploadedImageToSend,
+                    searchResults: docs,
+                    userID: req.user._id
+                })
+                fs.unlinkSync(__dirname + '/uploads/' + req.file.filename)
+            })
+        })
     } else {
         res.redirect("/login")
     }

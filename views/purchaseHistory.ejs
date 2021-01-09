@@ -43,39 +43,45 @@
             <h1>Purchase History</h1>
             <p>All of your image purchase history.</p>
         </div>
-        <% let type = "" %>
-            <% purchaseHistoryArr.forEach(function(purchase) { %>
-                <% if (purchase.purchaseType === "Sell") {type = "Sold"} else if (purchase.purchaseType === "Buy") {type = "Bought"} %>
-                    <div class="row" style="padding: 10px 50px;">
-                        <div class="col-sm-7">
-                            <div class="panel panel-default" style="text-align: center;">
-                                <!-- ADD CHECKBOX - show when select images is clicked -->
-                                <div class="panel-body">
-                                    <a target="_self">
+        <% if (purchaseHistoryArr.length === 0 || purchaseHistoryArr === undefined) { %>
+            <div class="alert alert-dark row" role="alert" style="margin-left: 50px; margin-right: 50px;">
+                Purchase or buy an image to get started.
+            </div>
+            <% } %>
+
+                <% let type = "" %>
+                    <% purchaseHistoryArr.forEach(function(purchase) { %>
+                        <% if (purchase.purchaseType === "Sell") {type = "Sold"} else if (purchase.purchaseType === "Buy") {type = "Bought"} %>
+                            <div class="row" style="padding: 10px 50px;">
+                                <div class="col-sm-7">
+                                    <div class="panel panel-default" style="text-align: center;">
+                                        <!-- ADD CHECKBOX - show when select images is clicked -->
+                                        <div class="panel-body">
+                                            <a target="_self">
                                     <img style="width: 400px; height: 286px; margin-bottom: 0; object-fit: contain;" alt="" 
                                     class="img-responsive center-block img-styles" 
                                     src="data:<%= purchase.img.contentType %>;base64,<%= purchase.img.data.toString('base64') %>" /></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <h2>Purchase Type:
+                                        <%= type %>
+                                    </h2>
+                                    <h5>Caption:
+                                        <%= purchase.caption %>
+                                    </h5>
+                                    <h5>Price:
+                                        <%= purchase.price %>
+                                    </h5>
+                                    <h5>Date
+                                        <%= type %>:
+                                            <%= purchase.timeText %>
+                                    </h5>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-5">
-                            <h2>Purchase Type:
-                                <%= type %>
-                            </h2>
-                            <h5>Caption:
-                                <%= purchase.caption %>
-                            </h5>
-                            <h5>Price:
-                                <%= purchase.price %>
-                            </h5>
-                            <h5>Date
-                                <%= type %>:
-                                    <%= purchase.timeText %>
-                            </h5>
-                        </div>
-                    </div>
 
-                    <% }) %>
+                            <% }) %>
 
 
     </main>

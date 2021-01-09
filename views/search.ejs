@@ -67,7 +67,7 @@
     <main class="my-container">
         <h1>Search</h1>
         <h6>Showing search results for the phrase "
-            <%= searchQuery %>". Try the <a href="" class="text-primary">reverse image search</a> to search by image.</h6>
+            <%= searchQuery %>". Try the <a href="/reverseImageSearch" class="text-primary">reverse image search</a> to search by image.</h6>
         <div class="row" style="margin-top: 20px;">
             <h2>Your Images</h2>
             <div class="row image-grid">
@@ -107,63 +107,52 @@
 
                     <h2>Images For Sale</h2>
                     <div class="row image-grid">
-                        <% searchResults.reverse().forEach(function(image) { %>
-                            <% const imgBase64Data = image.img.data.toString('base64') %>
-                                <% if (image.sellImg && !(image.ownerUserID.toString() === userID.toString())) { %>
-                                    <% sellImgCounter += 1 %>
-                                        <div class="col-sm-3 col-md-3">
-                                            <a href="/buy-img/<%= image._id %>" target="_self">
-                                                <div class="panel panel-default">
-                                                    <!-- ADD CHECKBOX - show when select images is clicked -->
-
-                                                    <div class="panel-body">
-                                                        <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
-                                                    </div>
-                                                    <div class="panel-footer">
-                                                        <% if ((image.caption.length) >= 35) { %>
-                                                            <%= (image.caption).substring(0, 35) + "..." %>
-                                                                <% } else { %>
-                                                                    <%= image.caption %>
-                                                                        <% } %>
-                                                    </div>
-                                                    <div class="panel-footer">
-                                                        Price:
-                                                        <%= image.price %>
-                                                    </div>
-                                                    <div class="panel-footer">
-                                                        Uploaded:
-                                                        <%= image.timeText %>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <% } else if (image.sellImg) { %>
-                                            <% sellImgCounter += 1 %>
-                                                <div class="col-sm-3 col-md-3">
-                                                    <div class="panel panel-default">
-                                                        <!-- ADD CHECKBOX - show when select images is clicked -->
-                                                        <div class="panel-body">
-                                                            <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
-                                                        </div>
-                                                        <div class="panel-footer">
-                                                            <% if ((image.caption.length) >= 35) { %>
-                                                                <%= (image.caption).substring(0, 35) + "..." %>
-                                                                    <% } else { %>
-                                                                        <%= image.caption %>
+                        <% let hr_ef = "" %>
+                            <% let style = "" %>
+                                <% let render = false %>
+                                    <% searchResults.reverse().forEach(function(image) { %>
+                                        <% const imgBase64Data = image.img.data.toString('base64') %>
+                                            <% if (image.sellImg && !(image.ownerUserID.toString() === userID.toString())) { %>
+                                                <% render = true %>
+                                                    <% hr_ef = `/buy-img/${image._id}` %>
+                                                        <% style = "" %>
+                                                            <% } else if (image.sellImg) { %>
+                                                                <% render = true %>
+                                                                    <% hr_ef = undefined %>
+                                                                        <% style = "pointer-events: none;" %>
                                                                             <% } %>
-                                                        </div>
-                                                        <div class="panel-footer">
-                                                            Price:
-                                                            <%= image.price %>
-                                                        </div>
-                                                        <div class="panel-footer">
-                                                            Uploaded:
-                                                            <%= image.timeText %>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                                    <% }) %>
+                                                                                <% if (render) { %>
+                                                                                    <% sellImgCounter += 1 %>
+                                                                                        <div class="col-sm-3 col-md-3">
+                                                                                            <a href="<%= hr_ef %>" style="<%= style %>" target="_self">
+                                                                                                <div class="panel panel-default">
+                                                                                                    <!-- ADD CHECKBOX - show when select images is clicked -->
+
+                                                                                                    <div class="panel-body">
+                                                                                                        <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                                                                    </div>
+                                                                                                    <div class="panel-footer">
+                                                                                                        <% if ((image.caption.length) >= 35) { %>
+                                                                                                            <%= (image.caption).substring(0, 35) + "..." %>
+                                                                                                                <% } else { %>
+                                                                                                                    <%= image.caption %>
+                                                                                                                        <% } %>
+                                                                                                    </div>
+                                                                                                    <div class="panel-footer">
+                                                                                                        Price:
+                                                                                                        <%= image.price %>
+                                                                                                    </div>
+                                                                                                    <div class="panel-footer">
+                                                                                                        Uploaded:
+                                                                                                        <%= image.timeText %>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </a>
+                                                                                        </div>
+                                                                                        <% } %>
+
+                                                                                            <% render = false %>
+                                                                                                <% }) %>
                     </div>
                     <% if (sellImgCounter === 0) { %>
                         <div class="alert alert-dark" role="alert">
