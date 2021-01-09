@@ -1,21 +1,24 @@
 require('dotenv').config()
-const bcrypt = require("bcrypt")
+
+// Imports
+const fs = require("fs")
 const express = require("express")
 const bodyParser = require("body-parser")
 const ejs = require("ejs")
 const mongoose = require("mongoose")
 const session = require('express-session')
 const passport = require("passport")
-const { Image, User } = require("./MongoModels")
-const LocalStrategy = require("passport-local").Strategy
-const fs = require("fs")
+const { strategy } = require("./passportStrategy")
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
-const { getTimeDiffAndPrettyText, dateAdd } = require("./timeParsing")
+const Jimp = require('jimp');
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
-var Jimp = require('jimp');
+const { getTimeDiffAndPrettyText, dateAdd } = require("./timeParsing")
+const { Image, User } = require("./MongoModels")
+const { sortHome, sortReverseImageSearch, getTimeText } = require("./utils")
 
+// Express Initialization
 const app = express()
 
 app.use(express.static("public"))
@@ -24,9 +27,11 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
+// MongoDB Initialization
 mongoose.connect("mongodb://localhost:27017/ImageUserDB", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
 
+// Passport Initialization
 app.use(session({
     secret: process.env.SECRET_KEY,
     resave: false,
@@ -36,6 +41,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Passport Serialize and Deserialize User
 passport.serializeUser(function(user, done) {
     done(null, user.id)
 })
@@ -46,54 +52,23 @@ passport.deserializeUser(function(id, done) {
     })
 })
 
-passport.use(new LocalStrategy({
-        usernameField: "email",
-        passwordField: "password"
-    },
-    function(email, password, done) {
-        User.findOne({ email: email }, function(err, user) {
-            if (err) { return done(err); }
-            // Create New User
-            if (!user) {
-                bcrypt.hash(password, 10, function(err, hash) {
-                    const newUser = new User({
-                        email: email,
-                        password: hash,
-                        credits: 0,
-                        images: []
-                    })
+passport.use(strategy);
 
-                    newUser.save().then(function(savedUser) {
-                        console.log('Saved user successfully: %j', savedUser);
-                        return done(null, savedUser);
-                    })
-                })
-            } else { // Return Existing User
-                bcrypt.compare(password, user.password, function(err, result) {
-                    if (result) {
-                        return done(null, user);
-                    } else {
-                        done(null, false, { message: 'Incorrect password.' });
-                    }
-                });
-            }
-        });
-    }
-));
+/* 
+    Express Routes
+*/
 
-// GET REQUESTS
-
+// GET Requests
+// Main Route
 app.get("/", function(req, res) {
     if (req.isAuthenticated()) {
-        Image.find({}, function(err, docs) {
-            res.redirect("/home")
-        })
+        res.redirect("/home")
     } else {
-        console.log("Redirected by '/' route to Login Route")
         res.redirect("/login")
     }
 })
 
+// Login Route
 app.get("/login", function(req, res) {
     if (req.isAuthenticated()) {
         res.redirect("/home")
@@ -102,38 +77,23 @@ app.get("/login", function(req, res) {
     }
 })
 
+// Home Route
 app.get("/home", function(req, res) {
     if (req.isAuthenticated()) {
         Image.find({}, function(err, docs) {
-            //console.log(mongoose.Types.ObjectId())
-
-            docs.forEach(function(image) {
-                image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
-            })
-
-            docs = docs.sort(function(a, b) {
-                if ((new Date() - a.date) > (new Date() - b.date)) {
-                    return 1
-                } else if ((new Date() - a.date) < (new Date() - b.date)) {
-                    return -1
-                } else {
-                    return 0
-                }
-            })
-
-            console.log(docs)
-
+            docs.forEach(getTimeText)
+            docs = docs.sort(sortHome)
             res.render("home", {
                 images: docs,
                 userID: req.user._id
             })
         })
     } else {
-        console.log("Redirected by '/home' route to Login Route")
         res.redirect("/login")
     }
 })
 
+// Account Route
 app.get("/account", function(req, res) {
     if (req.isAuthenticated()) {
         res.render("account", { user: req.user })
@@ -142,6 +102,7 @@ app.get("/account", function(req, res) {
     }
 })
 
+// Logout Route
 app.get("/logout", function(req, res) {
     if (req.isAuthenticated()) {
         req.logOut()
@@ -151,23 +112,25 @@ app.get("/logout", function(req, res) {
     }
 })
 
+// Sell Image Route
 app.get("/sell-img", function(req, res) {
     if (req.isAuthenticated()) {
-        let currentSellImgV = {}
+        let currentSellImg = {}
         for (i = req.user.ownImages.length - 1; i >= 0; i--) {
             if (!req.user.ownImages[i].sellImg) {
-                currentSellImgV = req.user.ownImages[i]
+                currentSellImg = req.user.ownImages[i]
             }
         }
         res.render("sell-img", {
             user: req.user,
-            currentSellImg: currentSellImgV //make sure this image has sellImg property set to false
+            currentSellImg: currentSellImg
         })
     } else {
         res.redirect("/login")
     }
 })
 
+// Buy Image Route
 app.get("/buy-img/:imgID", function(req, res) {
     if (req.isAuthenticated()) {
         Image.findById(req.params.imgID, function(err, docs) {
@@ -185,9 +148,7 @@ app.get("/buy-img/:imgID", function(req, res) {
                 }], function(err, result) {
                     if (!err) {
 
-                        result.forEach(function(image) {
-                            image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
-                        })
+                        result.forEach(getTimeText)
                         docs.timeText = getTimeDiffAndPrettyText(docs.date).friendlyNiceText
 
                         res.render("buy-img", { buyImg: docs, moreImgs: result })
@@ -204,57 +165,72 @@ app.get("/buy-img/:imgID", function(req, res) {
     }
 })
 
+// Payment Success Route
 app.get('/paymentSuccess', function(req, res) {
-    User.findOneAndUpdate({ _id: req.user._id }, {
-            $inc: { credits: 100 }
-        }, { new: true },
-        function(err, docs) {
-            if (!err) {
-                res.render("paymentSuccess")
-            } else {
-                console.log(err)
-            }
-        })
-})
-
-app.get('/paymentFailure', function(req, res) {
-    res.render("paymentFailure")
-})
-
-app.get("/search", function(req, res) {
-    res.render("search", { searchQuery: "test" })
-})
-
-app.get("/purchaseHistory", function(req, res) {
-    console.log(req.user.purchaseHistory)
-
-    let purchases = req.user.purchaseHistory;
-    purchases.forEach(function(purchase) {
-        purchase.timeText = getTimeDiffAndPrettyText(purchase.date).friendlyNiceText
-    })
-    res.render("purchaseHistory", { purchaseHistoryArr: purchases })
-})
-
-app.get("/reverseImageSearch", function(req, res) {
-    res.render("reverseImageSearch", {
-        uploadPhoto: undefined,
-        searchResults: undefined
-    })
-})
-
-// POST REQUESTS
-
-app.post("/account", upload.single('avatar'), function(req, res, next) {
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
-
-    // ADD IMAGE PROPERTIES TO IMAGES SCHEMA
-    // do ML stuff to grab image properties 
-    // get image properties in a list, add it to the images data
-
-    const obs = Array.from(new Set(req.body.objects.split("|").slice(1, req.body.objects.split("|").length)))
-
     if (req.isAuthenticated()) {
+        User.findOneAndUpdate({ _id: req.user._id }, {
+                $inc: { credits: 100 }
+            }, { new: true },
+            function(err, docs) {
+                if (!err) {
+                    res.render("paymentSuccess")
+                } else {
+                    console.log(err)
+                }
+            })
+    } else {
+        res.redirect("/login")
+    }
+})
+
+// Payment Failure Route
+app.get('/paymentFailure', function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("paymentFailure")
+    } else {
+        res.redirect("/login")
+    }
+})
+
+// Search Route
+app.get("/search", function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("search", { searchQuery: "test" })
+    } else {
+        res.redirect('/login')
+    }
+})
+
+// Purchase History Route
+app.get("/purchaseHistory", function(req, res) {
+    if (req.isAuthenticated()) {
+        let purchases = req.user.purchaseHistory;
+        purchases.forEach(getTimeText)
+        res.render("purchaseHistory", { purchaseHistoryArr: purchases })
+    } else {
+        res.redirect("/login")
+    }
+})
+
+// Reverse Image Search Route
+app.get("/reverseImageSearch", function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("reverseImageSearch", {
+            uploadPhoto: undefined,
+            searchResults: undefined
+        })
+    } else {
+        res.redirect("/login")
+    }
+})
+
+// POST Requests
+// Account Route
+app.post("/account", upload.single('avatar'), function(req, res, next) {
+    if (req.isAuthenticated()) {
+        const bodyObjects = req.body.objects.split("|")
+        const obs = Array.from(new Set(bodyObjects.slice(1, bodyObjects.length)))
+
         const newImg = new Image({
             ownerUserID: req.user._id,
             caption: req.body.caption,
@@ -282,6 +258,7 @@ app.post("/account", upload.single('avatar'), function(req, res, next) {
     }
 })
 
+// Reverse Image Search Route
 app.post("/reverseImageSearch", upload.single('avatar'), function(req, res, next) {
     if (req.isAuthenticated()) {
         Image.find({
@@ -302,25 +279,14 @@ app.post("/reverseImageSearch", upload.single('avatar'), function(req, res, next
                         }
                     })
                 }
-                docs = docs.sort(function(a, b) {
-                    if (a.difference < b.difference) {
-                        return -1
-                    } else if (a.difference > b.difference) {
-                        return 1
-                    } else {
-                        return 0
-                    }
-                })
-                docs = docs.slice(0, 3)
+                docs = docs.sort(sortReverseImageSearch).slice(0, 3)
                 const uploadedImageToSend = Image({
                     img: {
                         data: fs.readFileSync(__dirname + '/uploads/' + req.file.filename),
                         contentType: req.file.mimetype
                     }
                 })
-                docs.forEach(function(image) {
-                    image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
-                })
+                docs.forEach(getTimeText)
                 res.render("reverseImageSearch", {
                     uploadPhoto: uploadedImageToSend,
                     searchResults: docs,
@@ -334,20 +300,19 @@ app.post("/reverseImageSearch", upload.single('avatar'), function(req, res, next
     }
 })
 
+// Login Route
 app.post('/login', passport.authenticate('local'), function(req, res) {
-    //console.log('Logging in as: ' + req.user);
     res.redirect("/home")
 });
 
+// Delete Route
 app.post("/delete", function(req, res) {
     Image.deleteMany({ _id: { $in: req.body.checkbox } }, function(err) {
         if (!err) {
-            console.log("Delete Images from Image Collection")
             User.update({ _id: req.user._id }, {
                 $pull: { ownImages: { _id: { $in: req.body.checkbox } } }
             }, function(err) {
                 if (!err) {
-                    console.log("Delete Images from User Collection")
                     res.redirect("/account")
                 } else {
                     console.log(err)
@@ -359,6 +324,7 @@ app.post("/delete", function(req, res) {
     })
 })
 
+// Sell Image Route
 app.post("/sell-img", function(req, res) {
     if (req.isAuthenticated()) {
         Image.findById(req.body.checkbox, function(err, docs) {
@@ -376,109 +342,117 @@ app.post("/sell-img", function(req, res) {
     }
 })
 
+// Add Sell Image Route
 app.post("/addSellImg", function(req, res) {
-    Image.findByIdAndUpdate(req.body._id, {
-        sellImg: true,
-        price: req.body.creditPrice,
-        date: new Date()
-    }, function(err, docs) {
-        if (!err) {
-            User.findOneAndUpdate({ _id: req.user._id, "ownImages._id": req.body._id }, {
-                    $set: {
-                        "ownImages.$.sellImg": true,
-                        "ownImages.$.price": req.body.creditPrice,
-                        "ownImages.$.date": new Date()
-                    }
-                }, { new: true },
-                function(err, docs) {
-                    res.redirect("/sell-img")
-                })
-
-        } else {
-            console.log(err)
-        }
-    })
-})
-
-app.post("/buy-img/:imgID", function(req, res) {
-    const buyImgID = req.params.imgID
-    const buyImgPrice = req.body.imageInfo.split(" ")[0]
-    const ImgOwnerID = req.body.imageInfo.split(" ")[1]
-
-    if (buyImgPrice > req.user.credits) {
-        Image.aggregate([{
-            $sample: { size: 4 }
-        }, {
-            $match: {
-                $and: [
-                    { _id: { $ne: buyImgID } },
-                    { sellImg: true }
-                ]
-            }
-        }], function(err, result) {
+    if (req.isAuthenticated()) {
+        Image.findByIdAndUpdate(req.body._id, {
+            sellImg: true,
+            price: req.body.creditPrice,
+            date: new Date()
+        }, function(err, docs) {
             if (!err) {
-                result.forEach(function(image) {
-                    image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
-                })
-                res.render("failure", { buyImg: buyImgID, moreImgs: result })
+                User.findOneAndUpdate({ _id: req.user._id, "ownImages._id": req.body._id }, {
+                        $set: {
+                            "ownImages.$.sellImg": true,
+                            "ownImages.$.price": req.body.creditPrice,
+                            "ownImages.$.date": new Date()
+                        }
+                    }, { new: true },
+                    function(err, docs) {
+                        res.redirect("/sell-img")
+                    })
+
             } else {
                 console.log(err)
             }
         })
     } else {
-        Image.findByIdAndUpdate(buyImgID, {
-            $set: {
-                ownerUserID: req.user._id,
-                sellImg: false,
-                price: 0
-            }
-        }, { new: true }, function(err, docs) {
-            if (!err) {
-                User.findByIdAndUpdate(req.user._id, {
-                    $inc: { credits: -buyImgPrice },
-                    $push: {
-                        ownImages: docs,
-                        purchaseHistory: {
-                            purchaseType: "Buy",
-                            price: buyImgPrice,
-                            caption: docs.caption,
-                            date: new Date(),
-                            img: docs.img
-                        }
-                    }
-                }, function(err) {
-                    if (!err) {
-                        User.findByIdAndUpdate(ImgOwnerID, {
-                            $inc: { credits: buyImgPrice },
-                            $pull: { ownImages: { _id: buyImgID } },
-                            $push: {
-                                purchaseHistory: {
-                                    purchaseType: "Sell",
-                                    price: buyImgPrice,
-                                    caption: docs.caption,
-                                    date: new Date(),
-                                    img: docs.img
-                                }
-                            }
-                        }, function(err) {
-                            if (!err) {
-                                // show success page 
-                                docs.timeText = getTimeDiffAndPrettyText(docs.date).friendlyNiceText
-                                docs.price = buyImgPrice
-                                res.render("success", { buyImg: docs })
-                            }
-                        })
-                    } else {
-                        console.log(err)
-                    }
-                })
-            } else {
-                console.log(err)
-            }
-        })
+        res.redirect("/login")
     }
 })
 
+// Buy Image Route
+app.post("/buy-img/:imgID", function(req, res) {
+    if (req.isAuthenticated()) {
+        const buyImgID = req.params.imgID
+        const buyImgPrice = req.body.imageInfo.split(" ")[0]
+        const ImgOwnerID = req.body.imageInfo.split(" ")[1]
+
+        if (buyImgPrice > req.user.credits) {
+            Image.aggregate([{
+                $sample: { size: 4 }
+            }, {
+                $match: {
+                    $and: [
+                        { _id: { $ne: buyImgID } },
+                        { sellImg: true }
+                    ]
+                }
+            }], function(err, result) {
+                if (!err) {
+                    result.forEach(getTimeText)
+                    res.render("failure", { buyImg: buyImgID, moreImgs: result })
+                } else {
+                    console.log(err)
+                }
+            })
+        } else {
+            Image.findByIdAndUpdate(buyImgID, {
+                $set: {
+                    ownerUserID: req.user._id,
+                    sellImg: false,
+                    price: 0
+                }
+            }, { new: true }, function(err, docs) {
+                if (!err) {
+                    User.findByIdAndUpdate(req.user._id, {
+                        $inc: { credits: -buyImgPrice },
+                        $push: {
+                            ownImages: docs,
+                            purchaseHistory: {
+                                purchaseType: "Buy",
+                                price: buyImgPrice,
+                                caption: docs.caption,
+                                date: new Date(),
+                                img: docs.img
+                            }
+                        }
+                    }, function(err) {
+                        if (!err) {
+                            User.findByIdAndUpdate(ImgOwnerID, {
+                                $inc: { credits: buyImgPrice },
+                                $pull: { ownImages: { _id: buyImgID } },
+                                $push: {
+                                    purchaseHistory: {
+                                        purchaseType: "Sell",
+                                        price: buyImgPrice,
+                                        caption: docs.caption,
+                                        date: new Date(),
+                                        img: docs.img
+                                    }
+                                }
+                            }, function(err) {
+                                if (!err) {
+                                    docs.timeText = getTimeDiffAndPrettyText(docs.date).friendlyNiceText
+                                    docs.price = buyImgPrice
+                                    res.render("success", { buyImg: docs })
+                                }
+                            })
+                        } else {
+                            console.log(err)
+                        }
+                    })
+                } else {
+                    console.log(err)
+                }
+            })
+        }
+    } else {
+        res.redirect("/login")
+    }
+})
+
+// Add Credits Route (Stripe)
 app.post('/create-checkout-session', async function(req, res) {
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -494,42 +468,39 @@ app.post('/create-checkout-session', async function(req, res) {
             quantity: 1,
         }, ],
         mode: 'payment',
-        success_url: 'http://localhost:3000/paymentSuccess',
-        cancel_url: 'http://localhost:3000/account',
+        success_url: 'http://' + req.get('Host') + '/paymentSuccess',
+        cancel_url: 'http://' + req.get('Host') + '/account',
     })
 
     res.json({ id: session.id })
 })
 
+// Search Route
 app.post("/search", function(req, res) {
-    console.log(req.body.searchInput)
-    Image.find({
-        $or: [
-            { caption: { $regex: `.*${req.body.searchInput}.*`, $options: "i" } },
-            { characteristics: { $regex: `.*${req.body.searchInput.toLowerCase()}.*` } }
-        ]
-    }, function(err, searchResults) {
-
-        console.log(searchResults)
-        searchResults.forEach(function(image) {
-            image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText
+    if (req.isAuthenticated()) {
+        Image.find({
+            $or: [
+                { caption: { $regex: `.*${req.body.searchInput}.*`, $options: "i" } },
+                { characteristics: { $regex: `.*${req.body.searchInput.toLowerCase()}.*` } }
+            ]
+        }, function(err, searchResults) {
+            searchResults.forEach(getTimeText)
+            if (!err) {
+                res.render("search", {
+                    searchQuery: req.body.searchInput,
+                    searchResults: searchResults,
+                    userID: req.user._id
+                })
+            } else {
+                console.log(err)
+            }
         })
-
-        if (!err) {
-            res.render("search", {
-                searchQuery: req.body.searchInput,
-                searchResults: searchResults,
-                userID: req.user._id
-            })
-        } else {
-            console.log(err)
-        }
-    })
-
+    } else {
+        res.redirect('/login')
+    }
 })
 
 // SERVER
-
 app.listen(3000, function() {
     console.log("Server started on port 3000.")
 })
