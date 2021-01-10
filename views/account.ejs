@@ -5,7 +5,7 @@
 
     <main class="my-container">
         <div class="row utility-row">
-            <div class="col-sm-4">
+            <div class="col-sm-4 row-u">
                 <h3>Add Images</h3>
                 <form action="/account" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
@@ -17,14 +17,14 @@
                     <button type="submit" id="add-btn" class="btn btn-primary btn-full-width" name="objects" onclick="">Add Photo</button>
                 </form>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 row-u">
                 <h3>Credits</h3>
                 <h5>Current Number of Credits:
                     <%= user.credits %>
                 </h5>
                 <button type="submit" class="btn btn-success btn-full-width" id="checkout-button">Add Credits</button>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-4 row-u">
                 <h3>Account Settings</h3>
                 <h5>Email:
                     <%= user.email %>
@@ -48,7 +48,7 @@
                                 <% const imgBase64Data = image.img.data.toString('base64') %>
                                     <% if (!image.sellImg) { %>
                                         <% ownImgCounter += 1 %>
-                                            <div class="col-lg-4">
+                                            <div class="col-md-4">
                                                 <div class="panel panel-default">
                                                     <div class="panel-body">
                                                         <div class="photo-container">
@@ -81,7 +81,7 @@
                                         <% const imgBase64Data = image.img.data.toString('base64') %>
                                             <% if (image.sellImg) { %>
                                                 <% sellImgCounter += 1 %>
-                                                    <div class="col-lg-4">
+                                                    <div class="col-md-4">
                                                         <div class="panel panel-default">
                                                             <div class="panel-body">
                                                                 <div class="photo-container">

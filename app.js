@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({
 // MongoDB Initialization
 mongoose.connect("mongodb://localhost:27017/ImageUserDB", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
+mongoose.set('useFindAndModify', false);
 
 // Passport Initialization
 app.use(session({
@@ -328,7 +329,7 @@ app.post('/login', passport.authenticate('local'), function(req, res) {
 app.post("/delete", function(req, res) {
     Image.deleteMany({ _id: { $in: req.body.checkbox } }, function(err) {
         if (!err) {
-            User.update({ _id: req.user._id }, {
+            User.updateMany({ _id: req.user._id }, {
                 $pull: { ownImages: { _id: { $in: req.body.checkbox } } }
             }, function(err) {
                 if (!err) {

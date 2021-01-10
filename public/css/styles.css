@@ -11,6 +11,23 @@
 
 /* Header & Footer Styles */
 
+.nav-style {
+    background-color: #fff;
+    border-bottom: 1px #e7e7e7 solid;
+}
+
+.navbar {
+    padding: 1.25rem 0.75rem 1.25rem 0.75rem;
+}
+
+.nav-item {
+    margin-left: 10px;
+}
+
+.custom-search {
+    margin-left: auto;
+}
+
 .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;
@@ -285,6 +302,7 @@
 .buy-img-info {
     height: 530px;
     padding: 15px;
+    margin-bottom: .75rem;
 }
 
 .more-img {
