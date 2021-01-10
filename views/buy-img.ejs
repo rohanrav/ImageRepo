@@ -1,35 +1,6 @@
 <%- include('partials/header') %>
 
     <style>
-        .my-container {
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 115px;
-        }
-        
-        .my-card {
-            margin: 0 15px;
-        }
-        
-        .card-group>.card:not(:first-child) {
-            border-radius: 0.25rem;
-        }
-        
-        .card-group>.card:not(:last-child) {
-            border-radius: 0.25rem;
-        }
-        
-        .card-group>.card+.card {
-            border-left: 1px solid rgba(0, 0, 0, .125);
-            margin-left: 15px;
-        }
-        
-        .card-group {
-            margin: 2rem 0rem;
-        }
-        
         a {
             text-decoration: none;
             color: #000;
@@ -38,75 +9,15 @@
         a:hover {
             color: #000;
         }
-        
-        .image-grid img {
-            margin-bottom: 1rem;
-        }
-        
-        .panel {
-            margin-bottom: 20px;
-            background-color: #fff;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-        }
-        
-        .panel-default {
-            border-color: #ddd;
-        }
-        
-        .panel-body {
-            padding: 15px;
-        }
-        
-        .panel-footer {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-top: 1px solid #ddd;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-        
-        .image-grid img {
-            margin-bottom: .75rem;
-        }
-        
-        .center-block {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
-        h3 {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            border-top: 1px solid rgba(0, 0, 0, .125);
-            border-bottom: 1px solid rgba(0, 0, 0, .125);
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            padding-bottom: 1rem;
-        }
     </style>
 
     <main class="my-container">
-
-        <div class="row image-grid" style="margin: 25px 0;">
-            <!-- <div class="col-sm-7" style="background-color: blueviolet;">
-                <div style="width: 824px; object-fit: contain; ">
-                    <img src="data:<%= buyImg.img.contentType %>;base64,<%= buyImg.img.data.toString('base64') %>" style="padding: 15px;">
-                </div>
-            </div> -->
-
+        <div class="row image-grid buy-img-container">
             <div class="col-sm-7">
                 <div class="panel panel-default">
-                    <!-- ADD CHECKBOX - show when select images is clicked -->
                     <div class="panel-body">
                         <a target="_self">
-                                <img style="width: 700px; height: 500px; margin-bottom: 0; object-fit: contain;" alt="" 
-                                class="img-responsive center-block img-styles" 
+                                <img class="img-responsive center-block main-buy-img" 
                                 src="data:<%= buyImg.img.contentType %>;base64,<%= buyImg.img.data.toString('base64') %>" /></a>
                     </div>
 
@@ -115,21 +26,20 @@
             <div class="col-sm-5">
 
                 <div class="panel panel-default">
-                    <!-- ADD CHECKBOX - show when select images is clicked -->
-                    <div class="panel-body" style="height: 530px; padding: 15px;">
-                        <h1>Buy Image</h1>
-                        <h3>Caption:
-                            <span class="text-muted" style="font-weight: 300;"><%= buyImg.caption %></span>
+                    <div class="panel-body buy-img-info">
+                        <h1 class="buy-image-title">Buy Image</h1>
+                        <h3 class="image-info">Caption:
+                            <span class="text-muted data-style"><%= buyImg.caption %></span>
                         </h3>
-                        <h3>Price:
-                            <span class="text-muted" style="font-weight: 300;"><%= buyImg.price %> Credits</span>
+                        <h3 class="image-info">Price:
+                            <span class="text-muted data-style"><%= buyImg.price %> Credits</span>
                         </h3>
-                        <h3>
+                        <h3 class="image-info">
                             Uploaded:
-                            <span class="text-muted" style="font-weight: 300;"><%= buyImg.timeText %></span>
+                            <span class="text-muted data-style"><%= buyImg.timeText %></span>
                         </h3>
                         <form action="/buy-img/<%= buyImg._id %>" method="post">
-                            <button type="submit" style="width: 100%;" class="btn btn-lg btn-success" value="<%= buyImg.price %> <%= buyImg.ownerUserID %>" name="imageInfo">Buy Image!</button>
+                            <button type="submit" class="btn btn-lg btn-success btn-full-width" value="<%= buyImg.price %> <%= buyImg.ownerUserID %>" name="imageInfo">Buy Image!</button>
                         </form>
                     </div>
 
@@ -139,36 +49,35 @@
         </div>
 
 
-        <h2 style="text-align: center;">More Images You May Like</h2>
+        <h2 class="more-images-title">More Images You May Like</h2>
         <div class="card-group">
             <% moreImgs.forEach(function(image) { %>
-                <% const imgData = image.img %>
-                    <% const imgBase64Data = imgData.data.toString('base64') %>
-                        <div class="card my-card">
-                            <a href="/buy-img/<%= image._id %>" target="_self" style="margin: auto;">
-                            <img class="card-img-top" src="data:<%= imgData.contentType %>;base64,<%= imgBase64Data %>" style="height: 200px; width: 275px; object-fit: contain; padding: 15px;">
+                <div class="card my-card">
+                    <a href="/buy-img/<%= image._id %>" target="_self" class="center-img-panel">
+                            <img class="card-img-top more-img" src="data:<%= image.img.contentType %>;base64,<%= image.img.data.toString('base64') %>">
                         </a>
-                            <a href="/buy-img/<%= image._id %>" target="_self">
-                                <div class="card-body">
-                                    <h5 class="card-title">Price:
-                                        <%= image.price %>
-                                    </h5>
-                                    <p class="card-text">
-                                        <% if ((image.caption.length) >= 35) { %>
-                                            <%= (image.caption).substring(0, 35) + "..." %>
-                                                <% } else { %>
-                                                    <%= image.caption %>
-                                                        <% } %>
-                                    </p>
-                                </div>
-                            </a>
-                            <div class="card-footer">
-                                <small class="text-muted">Uploaded <%= image.timeText %></small>
-                            </div>
+                    <a href="/buy-img/<%= image._id %>" target="_self">
+                        <div class="card-body">
+                            <h5 class="card-title">Price:
+                                <%= image.price %>
+                            </h5>
+                            <p class="card-text">
+                                <%= computeCaption(image.caption) %>
+                            </p>
                         </div>
-                        <% }) %>
+                    </a>
+                    <div class="card-footer">
+                        <small class="text-muted">Uploaded <%= image.timeText %></small>
+                    </div>
+                </div>
+                <% }) %>
 
-
+                    <% function computeCaption(caption) { %>
+                        <% if ((caption.length) >= 105) { %>
+                            <% return (caption).substring(0, 105) + "..." %>
+                                <% } %>
+                                    <% return caption %>
+                                        <% } %>
         </div>
     </main>
 

@@ -1,235 +1,71 @@
 <%- include('partials/header') %>
-
-    <style>
-        .image-grid img {
-            margin-bottom: 1rem;
-        }
-        
-        .panel {
-            margin-bottom: 20px;
-            background-color: #fff;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-        }
-        
-        .panel-default {
-            border-color: #ddd;
-        }
-        
-        .panel-body {
-            padding: 15px;
-        }
-        
-        .panel-footer {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-top: 1px solid #ddd;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-        
-        .image-grid img {
-            margin-bottom: .75rem;
-        }
-        
-        .center-block {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
-        .my-container {
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 120px;
-        }
-        
-        .my-photo-container {
-            position: relative;
-        }
-        
-        .checkmark {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            display: none;
-        }
-        
-        .form-check-input {
-            width: 1.75em;
-            height: 1.75em;
-            margin-top: .25em;
-            vertical-align: top;
-            background-color: #fff;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            border: 1px solid rgba(0, 0, 0, .25);
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
-            transition: background-color .15s ease-in-out, background-position .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-        }
-        
-        .loader-wrapper {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #242f3f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .loader {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            position: relative;
-            border: 4px solid #Fff;
-            animation: loader 2s infinite ease;
-        }
-        
-        .loader-inner {
-            vertical-align: top;
-            display: inline-block;
-            width: 100%;
-            background-color: #fff;
-            animation: loader-inner 2s infinite ease-in;
-        }
-        
-        @keyframes loader {
-            0% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(180deg);
-            }
-            50% {
-                transform: rotate(180deg);
-            }
-            75% {
-                transform: rotate(360deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        
-        @keyframes loader-inner {
-            0% {
-                height: 0%;
-            }
-            25% {
-                height: 0%;
-            }
-            50% {
-                height: 100%;
-            }
-            75% {
-                height: 100%;
-            }
-            100% {
-                height: 0%;
-            }
-        }
-    </style>
-
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 
-    <!-- Load TensorFlow.js. This is required to use coco-ssd model. -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs">
-    </script>
-    <!-- Load the coco-ssd model. -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd">
-    </script>
-
-
-    <main style="margin-top: 115px;" class="my-container">
-
-        <div class="row" style="margin-bottom: 20px;">
-            <!-- RIGHT SIDE COLUMN -->
+    <main class="my-container">
+        <div class="row utility-row">
             <div class="col-sm-4">
-                <div>
-                    <h3>Add Images</h3>
-                    <form action="/account" method="post" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <input type="text" name="caption" class="form-control" id="exampleFormControlInput1" placeholder="Caption" autocomplete="off" required>
-                        </div>
-                        <div class="mb-3">
-                            <input class="form-control" id="formFile" type="file" name="avatar" required>
-                        </div>
-                        <button type="submit" id="add-btn" class="btn btn-primary" style="width: 100%;" name="objects" onclick="">Add Photo</button>
-                    </form>
-                </div>
+                <h3>Add Images</h3>
+                <form action="/account" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <input type="text" name="caption" class="form-control" placeholder="Caption" autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" id="formFile" type="file" name="avatar" required>
+                    </div>
+                    <button type="submit" id="add-btn" class="btn btn-primary btn-full-width" name="objects" onclick="">Add Photo</button>
+                </form>
             </div>
             <div class="col-sm-4">
                 <h3>Credits</h3>
                 <h5>Current Number of Credits:
                     <%= user.credits %>
                 </h5>
-                <button type="submit" class="btn btn-success" style="width: 100%;" id="checkout-button">Add Credits</button>
+                <button type="submit" class="btn btn-success btn-full-width" id="checkout-button">Add Credits</button>
             </div>
             <div class="col-sm-4">
                 <h3>Account Settings</h3>
                 <h5>Email:
                     <%= user.email %>
                 </h5>
-                <form action="/logout" method="get" style="margin-bottom: 10px;">
-                    <button type="submit" class="btn btn-danger" style="width: 100%;">Log Out</button>
+                <form action="/logout" method="get" class="logout-btn">
+                    <button type="submit" class="btn btn-danger btn-full-width">Log Out</button>
                 </form>
                 <form action="/purchaseHistory" method="get">
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Purchase History</button>
+                    <button type="submit" class="btn btn-primary btn-full-width">Purchase History</button>
                 </form>
             </div>
         </div>
-
         <div class="row">
-            <!-- LEFT SIDE COLUMN -->
             <div class="col-sm-8">
                 <form action="/delete" method="post">
                     <h2>Your Images</h2>
                     <p>The images you own but are not selling.</p>
                     <div class="row image-grid">
                         <% let ownImgCounter = 0 %>
-                            <% let sellImgCounter = 0 %>
-                                <% user.ownImages.reverse().forEach(function(image) { %>
-                                    <% const imgBase64Data = image.img.data.toString('base64') %>
-                                        <% if (!image.sellImg) { %>
-                                            <% ownImgCounter += 1 %>
-                                                <div class="col-sm-4 col-md-4">
-                                                    <div class="panel panel-default">
-                                                        <!-- ADD CHECKBOX - show when select images is clicked -->
-                                                        <div class="panel-body">
-                                                            <div class="my-photo-container" style="height: 175px;">
-                                                                <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input" name="checkbox">
-                                                                <a target="_self">
-                                                        <img style="height: 175px; width: 250px; object-fit: contain;" alt="" 
-                                                        class="img-responsive center-block img-styles" 
-                                                        src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" /></a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="panel-footer">
-                                                            <% if ((image.caption.length) >= 35) { %>
-                                                                <%= (image.caption).substring(0, 35) + "..." %>
-                                                                    <% } else { %>
-                                                                        <%= image.caption %>
-                                                                            <% } %>
+                            <% user.ownImages.reverse().forEach(function(image) { %>
+                                <% const imgBase64Data = image.img.data.toString('base64') %>
+                                    <% if (!image.sellImg) { %>
+                                        <% ownImgCounter += 1 %>
+                                            <div class="col-sm-4 col-md-4">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body">
+                                                        <div class="photo-container">
+                                                            <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input checkmark-account" name="checkbox">
+                                                            <a target="_self">
+                                                                <img class="img-responsive center-block account-img" 
+                                                                src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                            </a>
                                                         </div>
                                                     </div>
+                                                    <div class="panel-footer">
+                                                        <%= computeCaption(image.caption) %>
+                                                    </div>
                                                 </div>
-                                                <% } %>
-                                                    <% }) %>
+                                            </div>
+                                            <% } %>
+                                                <% }) %>
                     </div>
 
                     <% if (ownImgCounter === 0) { %>
@@ -240,74 +76,67 @@
                             <h2>Images For Sale</h2>
                             <p>The images you are selling.</p>
                             <div class="row image-grid">
-                                <% user.ownImages.reverse().forEach(function(image) { %>
-                                    <% const imgBase64Data = image.img.data.toString('base64') %>
-                                        <% if (image.sellImg) { %>
-                                            <% sellImgCounter += 1 %>
-                                                <div class="col-sm-4 col-md-4">
-                                                    <div class="panel panel-default">
-                                                        <!-- ADD CHECKBOX - show when select images is clicked -->
-                                                        <div class="panel-body">
-                                                            <div class="my-photo-container" style="height: 175px;">
-                                                                <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input" name="checkbox">
-                                                                <a target="_self">
-                                                        <img style="height: 175px; width: 250px; object-fit: contain;" alt="" 
-                                                        class="img-responsive center-block img-styles" 
-                                                        src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" /></a>
+                                <% let sellImgCounter = 0 %>
+                                    <% user.ownImages.reverse().forEach(function(image) { %>
+                                        <% const imgBase64Data = image.img.data.toString('base64') %>
+                                            <% if (image.sellImg) { %>
+                                                <% sellImgCounter += 1 %>
+                                                    <div class="col-sm-4 col-md-4">
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-body">
+                                                                <div class="photo-container">
+                                                                    <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input checkmark-account" name="checkbox">
+                                                                    <a target="_self">
+                                                                        <img class="img-responsive center-block account-img" 
+                                                                        src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" />
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="panel-footer">
+                                                                <%= computeCaption(image.caption) %>
+                                                            </div>
+                                                            <div class="panel-footer">
+                                                                Price:
+                                                                <%= image.price %>
                                                             </div>
                                                         </div>
-                                                        <div class="panel-footer">
-                                                            <% if ((image.caption.length) >= 35) { %>
-                                                                <%= (image.caption).substring(0, 35) + "..." %>
-                                                                    <% } else { %>
-                                                                        <%= image.caption %>
-                                                                            <% } %>
-
-                                                        </div>
-                                                        <div class="panel-footer">
-                                                            Price:
-                                                            <%= image.price %>
-                                                        </div>
                                                     </div>
-                                                </div>
-                                                <% } %>
-                                                    <% }) %>
+                                                    <% } %>
+                                                        <% }) %>
                             </div>
                             <% if (sellImgCounter === 0) { %>
                                 <div class="alert alert-dark" role="alert">
                                     You have no photos you are selling. Go to the <a href="/sell-img" class="alert-link">sell images</a> page to get started!
                                 </div>
                                 <% } %>
-
                                     <div class="row">
                                         <div class="col">
-                                            <button id="select-img-btn" type="button" style="width: 100%;" class="btn btn-secondary">Select Images</button>
+                                            <button id="select-img-btn" type="button" class="btn btn-secondary btn-full-width">Select Images</button>
                                         </div>
                                         <div class="col">
-                                            <button id="delete-img-btn" type="submit" style="width: 100%;" class="btn btn-danger">Delete Selected Images</button>
+                                            <button id="delete-img-btn" type="submit" class="btn btn-danger btn-full-width">Delete Selected Images</button>
                                         </div>
                                     </div>
                 </form>
             </div>
             <div class="col-sm-4">
-                <!-- IMAGE PREVIEW WINDOW -->
-                <% let firstImage = user.ownImages[0] %>
+                <% let firstImage = user.ownImages[user.ownImages.length - 1] %>
                     <h2>Image Preview</h2>
                     <p>Click the images on the left to preview them.</p>
                     <% if (firstImage !== {} && firstImage !== undefined && firstImage.img !== undefined) { %>
                         <div class="panel panel-default">
-                            <!-- ADD CHECKBOX - show when select images is clicked -->
                             <div class="panel-body">
-                                <a target="_self"><img id="previewImage" style="height: 100%; width: 100%;" alt="" 
-                                class="img-responsive center-block img-styles" 
-                                src="data:<%= firstImage.img.contentType %>;base64,<%= firstImage.img.data.toString('base64') %>" /></a>
+                                <a target="_self">
+                                    <img id="previewImage" class="img-responsive center-block" 
+                                    src="data:<%= firstImage.img.contentType %>;base64,<%= firstImage.img.data.toString('base64') %>" />
+                                </a>
                             </div>
                             <div class="panel-footer" id="previewCaption">
                                 <%= firstImage.caption %>
                             </div>
                         </div>
                         <a href="data:<%= firstImage.img.contentType %>;base64,<%= firstImage.img.data.toString('base64') %>" id="downloadBtn" download="<%= firstImage.caption %>">
-                            <button class="btn btn-outline-primary" style="width: 100%;">Download</button>
+                            <button class="btn btn-outline-primary btn-full-width">Download</button>
                         </a>
                         <% } %>
             </div>
@@ -317,106 +146,14 @@
             <span id="loader-id" class=""><span id="loader-inner-id" class=""></span></span>
         </div>
 
-        <script type="text/javascript">
-            var numClicked = 0
-            $("#select-img-btn").on("click", function() {
-                if (numClicked % 2 == 0) {
-                    $(".checkmark").css("display", "inline-block")
-                    $("#select-img-btn").html("Exit Select Images Mode")
-                } else {
-                    $(".checkmark").css("display", "none")
-                    $("#select-img-btn").html("Select Images")
-                }
-                numClicked += 1
-            })
+        <% function computeCaption(caption) { %>
+            <% if ((caption.length) >= 35) { %>
+                <% return (caption).substring(0, 35) + "..." %>
+                    <% } %>
+                        <% return caption %>
+                            <% } %>
 
-            $(".panel").on("click", function() {
-                let imgSrc = this.children[0].children[0].children[1].children[0].src
-                let caption = this.children[1].textContent
-                $("#previewImage").attr("src", imgSrc)
-                $("#previewCaption").html(caption.toString())
-                $("#downloadBtn").attr("href", imgSrc)
-                $("#downloadBtn").attr("download", caption.toString())
-            })
-
-            var stripe = Stripe('pk_test_51I6htECkQN1X0syTQMxWO5kBUZ7XpChuG1udwK2oFpgXiZ3kGR0JifdOT4A98Jjjt1EYmTcaouZhF6BVwHh6WOYL00uIsJ1X8a');
-            var checkoutButton = $('#checkout-button');
-
-            checkoutButton.on("click", function(event) {
-                fetch('/create-checkout-session', {
-                        method: 'POST',
-                    })
-                    .then(function(response) {
-                        return response.json();
-                    })
-                    .then(function(session) {
-                        return stripe.redirectToCheckout({
-                            sessionId: session.id
-                        });
-                    })
-                    .then(function(result) {
-                        // If `redirectToCheckout` fails due to a browser or network
-                        // error, you should display the localized error message to your
-                        // customer using `error.message`.
-                        if (result.error) {
-                            alert(result.error.message);
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('Error:', error);
-                    });
-            })
-
-            let preds;
-            let classes = ""
-
-            function animation(direction) {
-                if (direction === "start") {
-                    $('#loader-wrapper-id').addClass("loader-wrapper").fadeIn(500)
-                    $('#loader-id').addClass("loader").fadeIn(500)
-                    $('#loader-inner-id').addClass("loader-inner").fadeIn(500)
-                } else {
-                    $("#loader-wrapper-id").fadeOut(500, function() {
-                        $('#loader-wrapper-id').removeClass("loader-wrapper")
-                        $('#loader-id').removeClass("loader")
-                        $('#loader-inner-id').removeClass("loader-inner")
-                    });
-                }
-            }
-
-            $('#formFile').on("change", function(event) {
-
-                // start animation
-                animation("start")
-
-                const newImg = document.createElement('img')
-                const file = document.querySelector('input[type=file]').files[0]
-                const reader = new FileReader();
-                reader.addEventListener("load", function() {
-                    // convert image file to base64 string
-                    newImg.src = reader.result;
-                }, false);
-
-                if (file) {
-                    reader.readAsDataURL(file);
-                }
-
-                // Load the model.
-                cocoSsd.load().then(model => {
-                    // detect objects in the image.
-                    model.detect(newImg).then(predictions => {
-                        console.log('Predictions: ', predictions);
-                        preds = predictions;
-                        for (i = 0; i < preds.length; i++) {
-                            classes = classes + "|" + preds[i].class
-                        }
-                        // end animation
-                        animation("stop")
-                        $('#add-btn').val(classes)
-                    });
-                });
-            })
-        </script>
+                                <script src="/js/account.js"></script>
     </main>
 
     <%- include('partials/footer') %>

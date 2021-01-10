@@ -1,52 +1,5 @@
 <%- include('partials/header') %>
     <style>
-        .my-container {
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 120px;
-        }
-        
-        .image-grid img {
-            margin-bottom: 1rem;
-        }
-        
-        .panel {
-            margin-bottom: 20px;
-            background-color: #fff;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-        }
-        
-        .panel-default {
-            border-color: #ddd;
-        }
-        
-        .panel-body {
-            padding: 15px;
-        }
-        
-        .panel-footer {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-top: 1px solid #ddd;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-        
-        .image-grid img {
-            margin-bottom: .75rem;
-        }
-        
-        .center-block {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
         a {
             text-decoration: none;
             color: #000;
@@ -56,6 +9,7 @@
             color: #000;
         }
     </style>
+
     <main class="my-container">
         <div>
             <h1>Reverse Image Search</h1>
@@ -71,7 +25,7 @@
                     <% } else { %>
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <img style="height: 280px; width: 400px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= uploadPhoto.img.contentType %>;base64,<%= uploadPhoto.img.data.toString('base64') %>" />
+                                <img class="img-responsive center-block reverse-preview-img" src="data:<%= uploadPhoto.img.contentType %>;base64,<%= uploadPhoto.img.data.toString('base64') %>" />
                             </div>
                         </div>
                         <% } %>
@@ -79,7 +33,7 @@
                                 <div class="mb-3">
                                     <input class="form-control" id="formFile" type="file" name="avatar" required>
                                 </div>
-                                <button type="submit" id="add-btn" class="btn btn-primary" style="width: 100%;" name="objects">Add Photo</button>
+                                <button type="submit" id="add-btn" class="btn btn-primary btn-full-width" name="objects">Add Photo</button>
                             </form>
             </div>
             <div class="col-sm-8">
@@ -107,14 +61,10 @@
                                                                                     <a href="<%= hr_ef %>" style="<%= styleA %>">
                                                                                         <div class="panel panel-default">
                                                                                             <div class="panel-body">
-                                                                                                <img style="height: 175px; width: 250px; object-fit: contain;" alt="" class="img-responsive center-block img-styles" src="data:<%= image.img.contentType %>;base64,<%= image.img.data.toString('base64') %>" />
+                                                                                                <img class="img-responsive center-block reverse-img" src="data:<%= image.img.contentType %>;base64,<%= image.img.data.toString('base64') %>" />
                                                                                             </div>
                                                                                             <div class="panel-footer">
-                                                                                                <% if ((image.caption.length) >= 35) { %>
-                                                                                                    <%= (image.caption).substring(0, 35) + "..." %>
-                                                                                                        <% } else { %>
-                                                                                                            <%= image.caption %>
-                                                                                                                <% } %>
+                                                                                                <%= computeCaption(image.caption) %>
                                                                                             </div>
                                                                                             <div class="panel-footer">
                                                                                                 Uploaded:
@@ -129,4 +79,12 @@
             </div>
         </div>
     </main>
-    <%- include('partials/footer') %>
+
+    <% function computeCaption(caption) { %>
+        <% if ((caption.length) >= 35) { %>
+            <% return (caption).substring(0, 35) + "..." %>
+                <% } %>
+                    <% return caption %>
+                        <% } %>
+
+                            <%- include('partials/footer') %>

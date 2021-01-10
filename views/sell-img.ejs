@@ -1,85 +1,7 @@
 <%- include('partials/header') %>
 
-    <style>
-        .image-grid img {
-            margin-bottom: 1rem;
-        }
-        
-        .panel {
-            margin-bottom: 20px;
-            background-color: #fff;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-        }
-        
-        .panel-default {
-            border-color: #ddd;
-        }
-        
-        .panel-body {
-            padding: 15px;
-        }
-        
-        .panel-footer {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-top: 1px solid #ddd;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-        
-        .image-grid img {
-            margin-bottom: .75rem;
-        }
-        
-        .center-block {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
-        .my-container {
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 120px;
-        }
-        
-        .my-photo-container {
-            position: relative;
-        }
-        
-        .checkmark {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-        }
-        
-        .form-check-input {
-            width: 1.75em;
-            height: 1.75em;
-            margin-top: .25em;
-            vertical-align: top;
-            background-color: #fff;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: contain;
-            border: 1px solid rgba(0, 0, 0, .25);
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
-            transition: background-color .15s ease-in-out, background-position .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-        }
-    </style>
-
-    <main style="margin-top: 115px;" class="my-container">
+    <main class="my-container">
         <div class="row">
-            <!-- LEFT SIDE COLUMN -->
             <div class="col-12 col-md-8">
                 <form action="/sell-img" method="post">
                     <h2>Your Images</h2>
@@ -87,27 +9,24 @@
                     <div class="row image-grid">
                         <% let imgCounter = 0 %>
                             <% user.ownImages.reverse().forEach(function(image) { %>
-                                <% const imgBase64Data = image.img.data.toString('base64') %>
-                                    <% if (!image.sellImg && !(image._id.toString() === currentSellImg._id.toString())) { %>
-                                        <% imgCounter += 1 %>
-                                            <div class="col-sm-4 col-md-4">
-                                                <div class="panel panel-default">
-                                                    <!-- ADD CHECKBOX - show when select images is clicked -->
-                                                    <div class="panel-body">
-                                                        <div class="my-photo-container">
-                                                            <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input" name="checkbox" onchange="this.form.submit()">
-                                                            <a target="_self"><img style="height: 175px; width: 250px; object-fit: contain;" alt="" 
-                                                                            class="img-responsive center-block img-styles" 
-                                                                            src="data:<%= image.img.contentType %>;base64,<%= imgBase64Data %>" /></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="panel-footer">
-                                                        <%= image.caption %>
+                                <% if (!image.sellImg && !(image._id.toString() === currentSellImg._id.toString())) { %>
+                                    <% imgCounter += 1 %>
+                                        <div class="col-sm-4 col-md-4">
+                                            <div class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="photo-container">
+                                                        <input type="checkbox" value="<%= image._id %>" class="checkmark form-check-input" name="checkbox" onchange="this.form.submit()">
+                                                        <a target="_self"><img class="img-responsive center-block account-img" 
+                                                                            src="data:<%= image.img.contentType %>;base64,<%= image.img.data.toString('base64') %>" /></a>
                                                     </div>
                                                 </div>
+                                                <div class="panel-footer">
+                                                    <%= image.caption %>
+                                                </div>
                                             </div>
-                                            <% } %>
-                                                <% }) %>
+                                        </div>
+                                        <% } %>
+                                            <% }) %>
                     </div>
                     <% if (imgCounter === 0) { %>
                         <div class="alert alert-dark" role="alert">
@@ -117,20 +36,14 @@
                 </form>
             </div>
 
-
-            <!-- RIGHT SIDE COLUMN -->
             <div class="col-6 col-md-4">
                 <h2>Image To Sell</h2>
                 <p>Set the details of the image you want to sell.</p>
                 <% if (currentSellImg.img !== undefined) { %>
                     <div class="panel panel-default">
-                        <!-- ADD CHECKBOX - show when select images is clicked -->
                         <div class="panel-body">
-                            <div>
-                                <a target="_self"><img style="height: 100%; width: 100%;" alt="" 
-                                class="img-responsive center-block img-styles" 
+                            <a target="_self"><img class="img-responsive center-block sell-img-preview " 
                                 src="data:<%= currentSellImg.img.contentType %>;base64,<%= currentSellImg.img.data.toString('base64') %>" /></a>
-                            </div>
                         </div>
                         <div class="panel-footer">
                             <%= currentSellImg.caption %>
@@ -138,18 +51,16 @@
                     </div>
                     <form action="/addSellImg" method="post">
                         <div class="mb-3 row">
-                            <label for="inputPassword" class="col-sm-4 col-form-label">Set Credit Price:</label>
+                            <label for="inputCaption" class="col-sm-4 col-form-label">Set Credit Price:</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="inputPassword" name="creditPrice" required>
+                                <input type="number" class="form-control" id="inputCaption" name="creditPrice" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-success" style="width: 100%;" name="_id" value="<%= currentSellImg._id %>">Sell Image!</button>
+                        <button type="submit" class="btn btn-success btn-full-width" name="_id" value="<%= currentSellImg._id %>">Sell Image!</button>
                     </form>
                     <% } %>
-
             </div>
         </div>
-
     </main>
 
     <%- include('partials/footer') %>

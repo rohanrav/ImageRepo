@@ -2,86 +2,11 @@
 
     <style>
         .my-container {
-            padding-right: 50px;
-            padding-left: 50px;
-            margin-right: auto;
-            margin-left: auto;
+            margin-top: 0;
         }
         
-        .image-grid img {
-            margin-bottom: 1rem;
-        }
-        
-        .panel {
-            margin-bottom: 20px;
-            background-color: #fff;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-        }
-        
-        .panel-default {
-            border-color: #ddd;
-        }
-        
-        .panel-body {
-            padding: 15px;
-        }
-        
-        .panel-footer {
-            padding: 10px 15px;
-            background-color: #f5f5f5;
-            border-top: 1px solid #ddd;
-            border-bottom-right-radius: 3px;
-            border-bottom-left-radius: 3px;
-        }
-        
-        .image-grid img {
-            margin-bottom: .75rem;
-        }
-        
-        .center-block {
-            display: block;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        
-        h3 {
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            border-top: 1px solid rgba(0, 0, 0, .125);
-            border-bottom: 1px solid rgba(0, 0, 0, .125);
-            margin-bottom: 1rem;
-        }
-        
-        h1 {
-            padding-bottom: 1rem;
-        }
-        
-        .display-4 {
-            font-weight: 400;
-        }
-        
-        .my-card {
-            margin: 0 15px;
-        }
-        
-        .card-group>.card:not(:first-child) {
-            border-radius: 0.25rem;
-        }
-        
-        .card-group>.card:not(:last-child) {
-            border-radius: 0.25rem;
-        }
-        
-        .card-group>.card+.card {
-            border-left: 1px solid rgba(0, 0, 0, .125);
-            margin-left: 15px;
-        }
-        
-        .card-group {
-            margin: 2rem 0rem;
+        .failure-container {
+            padding-top: 115px;
         }
         
         a {
@@ -95,9 +20,9 @@
     </style>
 
     <main>
-        <div class="jumbotron my-container bg-danger" style="padding-top: 115px;">
-            <h1 class="display-4" style="color: #fff;">Failure!</h1>
-            <p class="lead" style="color: #fff;">There was an issue with buying your image. Make sure you have enough credits to buy the image.</p>
+        <div class="jumbotron my-container bg-danger failure-container">
+            <h1 class="display-4">Failure!</h1>
+            <p class="lead">There was an issue with buying your image. Make sure you have enough credits to buy the image.</p>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="/account" role="button">See your images</a>
             </p>
@@ -105,50 +30,51 @@
         </div>
 
         <div class="row my-container">
-            <div class="col-sm-6" style="padding-left: 0;">
+            <div class="col-sm-6 btn-container-50">
                 <form action="/buy-img/<%= buyImg %>">
-                    <button type="submit" style="width: 100%;" class="btn btn-lg btn-secondary">Go Back</button>
+                    <button type="submit" class="btn btn-lg btn-secondary btn-full-width">Go Back</button>
                 </form>
             </div>
-            <div class="col-sm-6" style="padding-right: 0;">
+            <div class="col-sm-6 btn-container-50">
                 <form action="/account">
-                    <button type="submit" style="width: 100%;" class="btn btn-lg btn-primary">Add Credits</button>
+                    <button type="submit" class="btn btn-lg btn-primary btn-full-width">Add Credits</button>
                 </form>
             </div>
         </div>
 
         <div class="my-container">
-            <h2 style="text-align: center; margin-top: 30px;">More Images You May Like</h2>
+            <h2 class="more-img-title">More Images You May Like</h2>
             <div class="card-group">
                 <% moreImgs.forEach(function(image) { %>
-                    <% const imgData = image.img %>
-                        <% const imgBase64Data = imgData.data.toString('base64') %>
-                            <div class="card my-card">
-                                <a href="/buy-img/<%= image._id %>" target="_self" style="margin: auto;">
-                            <img class="card-img-top" src="data:<%= imgData.contentType %>;base64,<%= imgBase64Data %>" style="height: 200px; width: 275px; object-fit: contain; padding: 15px;">
+                    <div class="card my-card">
+                        <a href="/buy-img/<%= image._id %>" target="_self" class="center-img-panel">
+                            <img class="card-img-top more-img-failure" src="data:<%= image.img.contentType %>;base64,<%= image.img.data.toString('base64') %>">
                         </a>
-                                <a href="/buy-img/<%= image._id %>" target="_self">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Price:
-                                            <%= image.price %>
-                                        </h5>
-                                        <p class="card-text">
-                                            <% if ((image.caption.length) >= 35) { %>
-                                                <%= (image.caption).substring(0, 35) + "..." %>
-                                                    <% } else { %>
-                                                        <%= image.caption %>
-                                                            <% } %>
-                                        </p>
-                                    </div>
-                                </a>
-                                <div class="card-footer">
-                                    <small class="text-muted">Uploaded <%= image.timeText %></small>
-                                </div>
+                        <a href="/buy-img/<%= image._id %>" target="_self">
+                            <div class="card-body">
+                                <h5 class="card-title">Price:
+                                    <%= image.price %>
+                                </h5>
+                                <p class="card-text">
+                                    <%= computeCaption(image.caption) %>
+                                </p>
                             </div>
-                            <% }) %>
+                        </a>
+                        <div class="card-footer">
+                            <small class="text-muted">Uploaded <%= image.timeText %></small>
+                        </div>
+                    </div>
+                    <% }) %>
             </div>
         </div>
     </main>
 
 
-    <%- include('partials/footer') %>
+    <% function computeCaption(caption) { %>
+        <% if ((caption.length) >= 105) { %>
+            <% return (caption).substring(0, 105) + "..." %>
+                <% } %>
+                    <% return caption %>
+                        <% } %>
+
+                            <%- include('partials/footer') %>
