@@ -36,9 +36,6 @@ $(document).ready(function() {
                 });
             })
             .then(function(result) {
-                // If `redirectToCheckout` fails due to a browser or network
-                // error, you should display the localized error message to your
-                // customer using `error.message`.
                 if (result.error) {
                     alert(result.error.message);
                 }
@@ -74,7 +71,6 @@ $(document).ready(function() {
         const file = document.querySelector('input[type=file]').files[0]
         const reader = new FileReader();
         reader.addEventListener("load", function() {
-            // convert image file to base64 string
             newImg.src = reader.result;
         }, false);
 
@@ -82,9 +78,7 @@ $(document).ready(function() {
             reader.readAsDataURL(file);
         }
 
-        // Load the model.
         cocoSsd.load().then(model => {
-            // detect objects in the image.
             model.detect(newImg).then(predictions => {
                 console.log('Predictions: ', predictions);
                 preds = predictions;
