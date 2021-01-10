@@ -2,7 +2,7 @@
 
     <main class="my-container">
         <div class="row">
-            <div class="col-12 col-md-8">
+            <div class="col-lg-8">
                 <form action="/sell-img" method="post">
                     <h2>Your Images</h2>
                     <p>Select the image you want to sell.</p>
@@ -11,7 +11,7 @@
                             <% user.ownImages.reverse().forEach(function(image) { %>
                                 <% if (!image.sellImg && !(image._id.toString() === currentSellImg._id.toString())) { %>
                                     <% imgCounter += 1 %>
-                                        <div class="col-sm-4 col-md-4">
+                                        <div class="col-lg-4">
                                             <div class="panel panel-default">
                                                 <div class="panel-body">
                                                     <div class="photo-container">
@@ -36,7 +36,7 @@
                 </form>
             </div>
 
-            <div class="col-6 col-md-4">
+            <div class="col-lg-4">
                 <h2>Image To Sell</h2>
                 <p>Set the details of the image you want to sell.</p>
                 <% if (currentSellImg.img !== undefined) { %>

@@ -21,6 +21,8 @@ const { sortHome, sortReverseImageSearch, getTimeText } = require("./utils")
 
 // Express Initialization
 const app = express()
+let width = 0
+let size = 0
 
 app.use(express.static(path.join(__dirname, "public")))
 app.set('view engine', 'ejs')
@@ -81,12 +83,24 @@ app.get("/login", function(req, res) {
 // Home Route
 app.get("/home", function(req, res) {
     if (req.isAuthenticated()) {
+        let send = 0
+        if (width >= 1350) {
+            send = 4
+        } else if (width >= 1080 && width <= 1350) {
+            send = 3
+        } else if (width >= 760 && width <= 1080) {
+            send = 2
+        } else {
+            send = 1
+        }
+
         Image.find({}, function(err, docs) {
             docs.forEach(getTimeText)
             docs = docs.sort(sortHome)
             res.render("home", {
                 images: docs,
-                userID: req.user._id
+                userID: req.user._id,
+                columns: send
             })
         })
     } else {
@@ -134,10 +148,14 @@ app.get("/sell-img", function(req, res) {
 // Buy Image Route
 app.get("/buy-img/:imgID", function(req, res) {
     if (req.isAuthenticated()) {
+        let size = 4;
+        if (width <= 769) {
+            size = 2
+        }
         Image.findById(req.params.imgID, function(err, docs) {
             if (!err) {
                 Image.aggregate([{
-                    $sample: { size: 4 }
+                    $sample: { size: size }
                 }, {
                     $match: {
                         $and: [
@@ -380,8 +398,12 @@ app.post("/buy-img/:imgID", function(req, res) {
         const ImgOwnerID = req.body.imageInfo.split(" ")[1]
 
         if (buyImgPrice > req.user.credits) {
+            let size = 4;
+            if (width <= 769) {
+                size = 2
+            }
             Image.aggregate([{
-                $sample: { size: 4 }
+                $sample: { size: size }
             }, {
                 $match: {
                     $and: [
@@ -499,6 +521,12 @@ app.post("/search", function(req, res) {
     } else {
         res.redirect('/login')
     }
+})
+
+// Get Size of Window
+app.post("/size", function(req, res) {
+    width = req.body.width
+    height = req.body.height
 })
 
 // SERVER

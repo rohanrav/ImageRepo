@@ -1,0 +1,33 @@
+/* HEADER */
+
+@media only screen and (max-width: 769px) {
+    .cont {
+        display: block;
+    }
+    .center-txt {
+        text-align: center;
+        margin: auto;
+    }
+    .copy-txt {
+        display: none !important;
+    }
+    .logo-style {
+        margin-bottom: 10px !important;
+    }
+    .preview-img {
+        margin-top: 10px;
+    }
+    .purchase-img {
+        height: 213px;
+        width: 300px;
+    }
+    .rev-title {
+        margin-top: 10px;
+    }
+    .main-buy-img {
+        width: 300px;
+    }
+    .buy-img-container img {
+        margin-bottom: 0 !important;
+    }
+}

@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-lg-8">
                 <form action="/delete" method="post">
                     <h2>Your Images</h2>
                     <p>The images you own but are not selling.</p>
@@ -48,7 +48,7 @@
                                 <% const imgBase64Data = image.img.data.toString('base64') %>
                                     <% if (!image.sellImg) { %>
                                         <% ownImgCounter += 1 %>
-                                            <div class="col-sm-4 col-md-4">
+                                            <div class="col-lg-4">
                                                 <div class="panel panel-default">
                                                     <div class="panel-body">
                                                         <div class="photo-container">
@@ -81,7 +81,7 @@
                                         <% const imgBase64Data = image.img.data.toString('base64') %>
                                             <% if (image.sellImg) { %>
                                                 <% sellImgCounter += 1 %>
-                                                    <div class="col-sm-4 col-md-4">
+                                                    <div class="col-lg-4">
                                                         <div class="panel panel-default">
                                                             <div class="panel-body">
                                                                 <div class="photo-container">
@@ -119,7 +119,7 @@
                                     </div>
                 </form>
             </div>
-            <div class="col-sm-4">
+            <div class="col-lg-4 preview-img">
                 <% let firstImage = user.ownImages[user.ownImages.length - 1] %>
                     <h2>Image Preview</h2>
                     <p>Click the images on the left to preview them.</p>

@@ -16,7 +16,7 @@
             <p>Upload an image and we will search for similar images on our platform!</p>
         </div>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-lg-4">
                 <h2>Uploaded Photo</h2>
                 <% if (uploadPhoto === undefined || uploadPhoto === {}) { %>
                     <div class="alert alert-dark" role="alert">
@@ -36,7 +36,7 @@
                                 <button type="submit" id="add-btn" class="btn btn-primary btn-full-width" name="objects">Add Photo</button>
                             </form>
             </div>
-            <div class="col-sm-8">
+            <div class="col-lg-8 rev-title">
                 <h2>Search Results</h2>
                 <% let display = true %>
                     <% if (uploadPhoto === undefined || uploadPhoto === {}) { %>
@@ -57,7 +57,7 @@
                                                                     <% hr_ef = `/buy-img/${image._id}` %>
                                                                         <% styleA = "" %>
                                                                             <% } %>
-                                                                                <div class="col-sm-4 col-md-4">
+                                                                                <div class="col-lg-4">
                                                                                     <a href="<%= hr_ef %>" style="<%= styleA %>">
                                                                                         <div class="panel panel-default">
                                                                                             <div class="panel-body">
