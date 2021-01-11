@@ -6,9 +6,18 @@
     }
 }
 
+@media only screen and (max-width: 1400px) {
+    .main-buy-img {
+        width: 650px;
+    }
+}
+
 @media only screen and (max-width: 1320px) {
     .account-img {
         width: 200px;
+    }
+    .main-buy-img {
+        width: 600px;
     }
 }
 
@@ -16,17 +25,23 @@
     .account-img {
         width: 175px;
     }
+    .main-buy-img {
+        width: 560px;
+    }
 }
 
 @media only screen and (max-width: 1120px) {
     .account-img {
         width: 155px;
     }
+    .main-buy-img {
+        width: 500px;
+    }
 }
 
 @media only screen and (max-width: 1025px) {
     .main-buy-img {
-        width: 480px;
+        width: 450px;
     }
 }
 
@@ -39,6 +54,24 @@
     }
     .btn-header {
         width: 100%;
+    }
+    .rev-title {
+        margin-top: 15px;
+    }
+    .main-buy-img {
+        width: 400px;
+    }
+}
+
+@media only screen and (max-width: 870px) {
+    .main-buy-img {
+        width: 350px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .main-buy-img {
+        width: 300px;
     }
 }
 

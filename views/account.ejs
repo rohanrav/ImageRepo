@@ -12,7 +12,7 @@
                         <input type="text" name="caption" class="form-control" placeholder="Caption" autocomplete="off" required>
                     </div>
                     <div class="mb-3">
-                        <input class="form-control" id="formFile" type="file" name="avatar" required>
+                        <input class="form-control" id="formFile" type="file" name="avatar" accept=".jpg,.jpeg,.png" required>
                     </div>
                     <button type="submit" id="add-btn" class="btn btn-primary btn-full-width" name="objects" onclick="">Add Photo</button>
                 </form>
@@ -138,7 +138,11 @@
                         <a href="data:<%= firstImage.img.contentType %>;base64,<%= firstImage.img.data.toString('base64') %>" id="downloadBtn" download="<%= firstImage.caption %>">
                             <button class="btn btn-outline-primary btn-full-width">Download</button>
                         </a>
-                        <% } %>
+                        <% } else { %>
+                            <div class="alert alert-danger" role="alert">
+                                <strong>No Image Preview Available.</strong>
+                            </div>
+                            <% } %>
             </div>
         </div>
 
