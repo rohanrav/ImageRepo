@@ -112,7 +112,9 @@ app.get("/home", function(req, res) {
 // Account Route
 app.get("/account", function(req, res) {
     if (req.isAuthenticated()) {
-        res.render("account", { user: req.user })
+        res.render("account", {
+            user: req.user
+        })
     } else {
         res.redirect("/login")
     }
