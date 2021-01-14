@@ -3,10 +3,10 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const { Image, User } = require("./MongoModels")
 
-mongoose.connect("mongodb://localhost:27017/ImageUserDB", { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect("mongodb+srv://admin-rohan:test1234@cluster0.wppbu.mongodb.net/ImageUserDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
 
-let strategy = new LocalStrategy({
+const strategy = new LocalStrategy({
         usernameField: "email",
         passwordField: "password"
     },

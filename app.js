@@ -21,17 +21,18 @@ const { sortHome, sortReverseImageSearch, getTimeText } = require("./utils")
 
 // Express Initialization
 const app = express()
-let width = 0
-let size = 0
-
 app.use(express.static(path.join(__dirname, "public")))
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({
     extended: true
 }))
 
+// Global Variables Initialization
+let width = 0
+let size = 0
+
 // MongoDB Initialization
-mongoose.connect("mongodb://localhost:27017/ImageUserDB", { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect("mongodb+srv://admin-rohan:test1234@cluster0.wppbu.mongodb.net/ImageUserDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
 mongoose.set('useFindAndModify', false);
 
@@ -297,7 +298,7 @@ app.post("/reverseImageSearch", upload.single('avatar'), function(req, res, next
                         if (distance < 0.75 || diff < 0.75) {
                             docs[i].difference = distance + diff
                         } else {
-                            docs[i].difference = 100000000000000
+                            docs[i].difference = 1.5
                         }
                     })
                 }
