@@ -4,15 +4,15 @@ ImageRepo is an Image Repository service, where users can buy and sell images ea
 ## Description
 When users visit the site, they will be prompted to register or login. Once authenticated users can buy images posted by others users and upload and sell their own images. See the images below:
 
-![]()
+![](https://github.com/rohanrav/ImageRepo/blob/master/images/home.png)
 Home Page
 
-![]()
+![](https://github.com/rohanrav/ImageRepo/blob/master/images/account.png)
 Account Page
 
 Users can use the search bar to search for images by their caption, characteristics, or similar images via reverse image search. See the images below:
 
-![]()
+![](https://github.com/rohanrav/ImageRepo/blob/master/images/search.png)
 Search Page
 
 ## How was it built
