@@ -6,7 +6,7 @@ When users visit the site, they will be prompted to register or login. Once auth
 
 #### Home Page
 ![](https://github.com/rohanrav/ImageRepo/blob/master/images/home.png)
-\n
+
 #### Account Page
 ![](https://github.com/rohanrav/ImageRepo/blob/master/images/account.png)
 
