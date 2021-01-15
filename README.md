@@ -2,7 +2,7 @@
 ImageRepo is an Image Repository service, where users can buy and sell images easily. The site is currently running at the link: https://shielded-river-42859.herokuapp.com/
 
 ## Description
-When users visit the site, they will be prompted to register or login. Once authenticated users can buy images posted by others users and upload and sell their own images. See the images below:
+When users visit the site, they will be prompted to register or login. Once authenticated, users can buy images posted by others users and upload and sell their own images. See the images below:
 
 #### Home Page
 ![](https://github.com/rohanrav/ImageRepo/blob/master/images/home.png)
