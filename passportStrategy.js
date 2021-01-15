@@ -6,6 +6,8 @@ const { Image, User } = require("./MongoModels")
 mongoose.connect("mongodb+srv://admin-rohan:test1234@cluster0.wppbu.mongodb.net/ImageUserDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
 
+const saltRounds = 10
+
 const strategy = new LocalStrategy({
         usernameField: "email",
         passwordField: "password"
@@ -15,7 +17,7 @@ const strategy = new LocalStrategy({
             if (err) { return done(err); }
             // Create New User
             if (!user) {
-                bcrypt.hash(password, 10, function(err, hash) {
+                bcrypt.hash(password, saltRounds, function(err, hash) {
                     const newUser = new User({
                         email: email,
                         password: hash,
