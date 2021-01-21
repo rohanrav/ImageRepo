@@ -27,4 +27,5 @@ Users can use the search bar to search for images by their caption, characterist
 The application was built using Node, Express, and MongoDB. 
 - In order to securely login and register users, Bcrypt along with Passport.js was used to track if a user is logged in, persist their login session using cookies, and safely hash and salt their password for security.
 - In order to provide a more comprehensive image search functionality Google's CoCoSSD ML model was used in order to search images by characteristics. Additionally, Jimp's hamming distance and pixel difference algorithms were used for the reverse image search functionality to provide similar images.
-- Used the Stripe Payment API to handle all monetary transactions
+- Used the Stripe Payment API to handle all monetary transactions.
+- Used EJS, HTML, and CSS to implement the front-end of the site.
