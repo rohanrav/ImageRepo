@@ -21,7 +21,7 @@ Users can use the search bar to search for images by their caption, characterist
 3. Browse and purchase the images for sale on the home page
 4. On the account page, upload and view your own images, add credits to your account (use the credit card number 4242 4242 4242 4242 for testing purposes), and view your purchase history
 5. On the Sell Image page, set the price of the images you want to sell
-6. Search for images by characteristics, captions, and similar images using the Reverse Image Search Feature
+6. Search for images by characteristics, captions, and even similar images using the Reverse Image Search Feature
 
 ## How was it built
 The application was built using Node, Express, and MongoDB. 
