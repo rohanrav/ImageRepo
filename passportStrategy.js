@@ -1,9 +1,10 @@
+require('dotenv').config()
 const LocalStrategy = require("passport-local").Strategy
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const { Image, User } = require("./MongoModels")
 
-mongoose.connect("mongodb+srv://admin-rohan:test1234@cluster0.wppbu.mongodb.net/ImageUserDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect("mongodb+srv://" + process.env.MONGO_CRED + "@cluster0.wppbu.mongodb.net/ImageUserDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.set("useCreateIndex", true)
 
 const saltRounds = 10
