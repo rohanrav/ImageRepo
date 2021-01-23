@@ -29,4 +29,4 @@ The application was built using Node, Express, and MongoDB.
 - In order to provide a more comprehensive image search functionality Google's CoCoSSD ML model was used in order to search images by characteristics. Additionally, Jimp's hamming distance and pixel difference algorithms were used for the reverse image search functionality to provide similar images.
 - Used the Stripe Payment API to handle all monetary transactions.
 - Used EJS, HTML, and CSS to implement the front-end of the site.
-- Deployed the site using Heroku at the link: https://shielded-river-42859.herokuapp.com/. 
+- Deployed the site using Heroku.
