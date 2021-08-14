@@ -79,7 +79,7 @@ app.get("/login", (req, res) => {
   if (req.isAuthenticated()) {
     res.redirect("/home");
   } else {
-    res.render("/login");
+    res.render("login");
   }
 });
 
