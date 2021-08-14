@@ -1,35 +1,35 @@
 .centered {
-    padding-top: 200px;
-    text-align: center;
+  padding-top: 200px;
+  text-align: center;
 }
 
 .secret-text {
-    text-align: center;
-    font-size: 2rem;
-    color: #fff;
-    background-color: #000;
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
 }
 
 #submit-btn {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .login-heading {
-    margin-bottom: 20px;
-    color: #212629;
+  margin-bottom: 20px;
+  color: #212629;
 }
 
 input {
-    margin-bottom: 7.5px;
+  margin-bottom: 7.5px;
 }
 
 .center {
-    margin: 0;
-    position: absolute;
-    top: 35%;
-    transform: translateY(-50%);
+  margin: 0;
+  position: absolute;
+  top: 35%;
+  transform: translateY(-50%);
 }
 
 .logo-colour {
-    color: #333b3f;
+  color: #333b3f;
 }
