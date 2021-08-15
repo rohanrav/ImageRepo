@@ -1,0 +1,118 @@
+/*
+SITE WIDE
+*/
+
+body {
+  background-image: url("./Artboard.svg") !important;
+  position: relative;
+  background-size: 15%;
+  background-position: -3px -3px;
+  height: 100%;
+}
+
+.primary-blue {
+  background-color: rgb(35, 118, 216) !important;
+}
+
+/*
+HEADER
+*/
+
+#logo-title {
+  color: rgb(35, 118, 216) !important;
+}
+
+.navbar {
+  padding: 12px 0 !important;
+}
+
+.navbar-nav > button:first-child {
+  margin-left: 0;
+}
+
+.navbar-nav > button,
+.navbar-nav > form > button {
+  margin-left: 10px;
+}
+
+/*
+FOOTER
+*/
+
+.footer-anchor {
+  position: absolute;
+  bottom: 0%;
+  left: 0%;
+  right: 0%;
+}
+
+.footer-logo {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.footer-links-col {
+  position: relative;
+}
+
+.footer-nav {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.footer-nav > a.nav-link {
+  padding: 2px 0.5rem !important;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.footer-nav > a > a.nav-link:hover {
+  color: #41464b;
+}
+
+.footer-copyright {
+  color: #6c757d !important;
+  font-size: 14px;
+}
+
+.footer-container {
+  background-color: #f8f9fa;
+  padding: 3rem 1rem;
+}
+
+.display-info-text {
+  padding: 1.5rem 1rem !important;
+}
+
+/*
+LOGIN
+*/
+
+.login-main {
+  height: 100vh;
+}
+
+.login-info {
+  position: absolute;
+  top: 42.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1050px;
+}
+
+.login-info:first-child {
+  text-align: center;
+}
+
+.login-info h4 {
+  font-weight: 300;
+  margin-bottom: 25px;
+}
+
+.login-logo {
+  font-size: 45px;
+  font-weight: 500;
+  text-decoration: rgb(35, 118, 216) underline;
+  margin-bottom: 20px;
+}

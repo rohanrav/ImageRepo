@@ -1,0 +1,6 @@
+@media only screen and (max-width: 576px) {
+  .footer-nav {
+    position: relative;
+    text-align: center !important;
+  }
+}
