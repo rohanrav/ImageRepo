@@ -6,7 +6,7 @@ const purchaseHistorySchema = new Schema({
   price: Number,
   caption: String,
   date: Date,
-  img: { data: Buffer, contentType: String },
+  imgUrl: String,
 });
 
 mongoose.model("purchaseHistory", purchaseHistorySchema);

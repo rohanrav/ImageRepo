@@ -1,6 +1,6 @@
 const getTimeDiffAndPrettyText = require("./time.utils");
 
-const sortHome = (a, b) => {
+const sortByDate = (a, b) => {
   if (new Date() - a.date > new Date() - b.date) {
     return 1;
   } else if (new Date() - a.date < new Date() - b.date) {
@@ -21,11 +21,11 @@ const sortReverseImageSearch = (a, b) => {
 };
 
 const getTimeText = (image) => {
-  image.timeText = getTimeDiffAndPrettyText(image.date).friendlyNiceText;
+  return { ...image._doc, timeText: getTimeDiffAndPrettyText(image.date).friendlyNiceText };
 };
 
 module.exports = {
-  sortHome,
+  sortByDate,
   sortReverseImageSearch,
   getTimeText,
 };

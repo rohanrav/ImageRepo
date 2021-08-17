@@ -15,7 +15,7 @@ const Header = ({ isLoggedIn, signOut }) => {
   const [term, setTerm] = useState("");
 
   return (
-    <Navbar collapseOnSelect sticky="top" expand="md" bg="light" variant="light">
+    <Navbar collapseOnSelect sticky="top" expand="lg" bg="light" variant="light">
       <Container>
         <Link to="/home" id="logo-title">
           <Navbar.Brand>ImageRepo</Navbar.Brand>
@@ -25,13 +25,13 @@ const Header = ({ isLoggedIn, signOut }) => {
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="me-auto">
-                <Button onClick={() => history.push(`/sell`)} variant="outline-secondary">
+                <Button as={Link} to="/sell" variant="outline-secondary">
                   Sell Image
                 </Button>
-                <Button onClick={() => history.push(`/purchase-history`)} variant="outline-secondary">
+                <Button as={Link} to="/feed" variant="outline-secondary">
                   Feed
                 </Button>
-                <Button onClick={() => history.push(`/account`)} variant="outline-secondary">
+                <Button as={Link} to="/account" variant="outline-secondary">
                   Account
                 </Button>
               </Nav>
@@ -46,7 +46,7 @@ const Header = ({ isLoggedIn, signOut }) => {
                     className="mr-2"
                     aria-label="Search"
                   />
-                  <Button onClick={() => history.push(`/search?q=${term}`)} variant="primary">
+                  <Button as={Link} to={`/search?q=${term}`} variant="primary">
                     Search
                   </Button>
                 </Form>

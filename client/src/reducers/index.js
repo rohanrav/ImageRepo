@@ -1,8 +1,12 @@
 import { combineReducers } from "redux";
 import { USER_LOGOUT } from "../actions/types";
 
+import homeImagesReducer from "./homeImages.reducer";
+import userProfileReducer from "./userProfile.reducer";
+
 const appReducer = combineReducers({
-  auth: "ff",
+  userProfile: userProfileReducer,
+  homeImages: homeImagesReducer,
 });
 
 const totalReducer = (state, action) => {

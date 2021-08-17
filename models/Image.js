@@ -7,7 +7,6 @@ const imagesSchema = new Schema({
   sellImg: { type: Boolean, default: false },
   price: Number,
   characteristics: [String],
-  img: { data: Buffer, contentType: String },
   date: { type: Date, default: Date.now },
 });
 

@@ -1,4 +1,5 @@
 const passport = require("passport");
+const _ = require("lodash");
 
 module.exports = (app) => {
   app.get(
@@ -18,6 +19,10 @@ module.exports = (app) => {
   });
 
   app.get("/api/current-user", (req, res) => {
-    res.status(200).json(req.session);
+    res.status(200).json(req.user);
+  });
+
+  app.get("/api/current-user-profile", (req, res) => {
+    res.status(200).json(_.pick(req.user, ["givenName", "familyName", "email", "credits"]));
   });
 };
