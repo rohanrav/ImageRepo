@@ -21,8 +21,8 @@ const Footer = ({ isLoggedIn, anchorBottom, displayInfoText, signOut }) => {
 
   return (
     <div
-      className={`footer-container ${anchorBottom && "footer-anchor"} ${
-        !displayInfoText && "display-info-text"
+      className={`footer-container ${anchorBottom ? "footer-anchor" : ""} ${
+        !displayInfoText ? "display-info-text" : ""
       }`}
     >
       <Container>

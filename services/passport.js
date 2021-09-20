@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const keys = require("../config/keys");
 
 const User = mongoose.model("users");
+const PurchaseHistory = mongoose.model("purchaseHistory");
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -37,6 +38,12 @@ passport.use(
             ownImages: [],
             purchaseHistory: [],
           }).save();
+
+          new PurchaseHistory({
+            userId: newUser._id,
+            purchaseHistory: [],
+          }).save();
+
           done(null, newUser);
         }
       } catch (e) {

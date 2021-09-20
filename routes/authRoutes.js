@@ -23,6 +23,6 @@ module.exports = (app) => {
   });
 
   app.get("/api/current-user-profile", (req, res) => {
-    res.status(200).json(_.pick(req.user, ["givenName", "familyName", "email", "credits"]));
+    res.status(200).json(_.pick(req.user, ["givenName", "familyName", "email", "credits", "_id"]));
   });
 };

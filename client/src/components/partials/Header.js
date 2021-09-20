@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-
 import history from "../../history";
+
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { signOut } from "../../actions";
 
 const Header = ({ isLoggedIn, signOut }) => {
   const [term, setTerm] = useState("");
+
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    history.push(`/search?q=${term}`);
+  };
 
   return (
     <Navbar collapseOnSelect sticky="top" expand="lg" bg="light" variant="light">
@@ -36,7 +41,7 @@ const Header = ({ isLoggedIn, signOut }) => {
                 </Button>
               </Nav>
               <Nav>
-                <Form className="d-flex" autoComplete="off">
+                <Form className="d-flex" autoComplete="off" onSubmit={onSearchSubmit}>
                   <FormControl
                     type="search"
                     name="imageSearch"
@@ -45,8 +50,9 @@ const Header = ({ isLoggedIn, signOut }) => {
                     placeholder="Search"
                     className="mr-2"
                     aria-label="Search"
+                    style={{ marginRight: "10px" }}
                   />
-                  <Button as={Link} to={`/search?q=${term}`} variant="primary">
+                  <Button type="submit" variant="primary">
                     Search
                   </Button>
                 </Form>

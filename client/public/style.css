@@ -203,3 +203,55 @@ ACCOUNT
 .account-container div.row:nth-child(2) {
   margin-top: 2rem;
 }
+
+.accounts-image-container {
+  padding: 0 0;
+}
+
+/*
+SELL
+*/
+
+.sell-container {
+  padding: 3rem 0;
+}
+
+/*
+BUY
+*/
+
+.buy-container {
+  padding: 3rem 0;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.more-card-image {
+  height: 180px;
+  object-fit: cover;
+}
+
+.image-card-text {
+  color: #000;
+}
+
+.more-images-container {
+  margin-top: 2rem !important;
+}
+
+.more-images-header {
+  text-align: center;
+  margin-bottom: 1.5rem !important;
+}
+
+.container-padding {
+  padding: 3rem 0;
+  height: fit-content;
+}
+
+.full-spinner {
+  text-align: center;
+  padding: 3rem 0;
+}

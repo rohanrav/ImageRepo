@@ -6,34 +6,36 @@ import history from "../history";
 import Login from "./Login";
 import Home from "./Home";
 import Account from "./Account";
+import Sell from "./Sell";
+import Buy from "./Buy";
+import Feed from "./Feed";
+import Search from "./Search";
 import GeneralError from "./error/GeneralError";
 import PageNotFoundError from "./error/PageNotFoundError";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 // Style Sheets
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
   return (
-    <>
-      <Router history={history}>
-        <div>
-          <Switch>
-            <Route path="/login" exact component={Login} />
-            <Route path="/home" exact component={Home} />
-            <Route path="/account" exact component={Account} />
-            {/* <Route path="/buy/:id" exact component={} />
-            <Route path="/search" exact component={} />
-            <Route path="/sell" exact component={} />
-            <Route path="/purchase-history" exact component={} />
-            <Route path="/purchase-success" exact component={} />
-            <Route path="/purchase-failure" exact component={} />
-            <Route path="/reverse-image-search" exact component={} /> */}
-            <Route path="/error" exact component={GeneralError} />
-            <Route component={PageNotFoundError} />
-          </Switch>
-        </div>
-      </Router>
-    </>
+    <Router history={history}>
+      <div>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/home" exact component={Home} />
+          <Route path="/login" exact component={Login} />
+          <Route path="/account" exact component={Account} />
+          <Route path="/sell" exact component={Sell} />
+          <Route path="/buy/:id" exact component={Buy} />
+          <Route path="/feed" exact component={Feed} />
+          <Route path="/search" exact component={Search} />
+          <Route path="/privacy-policy" exact component={PrivacyPolicy} />
+          <Route path="/error" exact component={GeneralError} />
+          <Route component={PageNotFoundError} />
+        </Switch>
+      </div>
+    </Router>
   );
 };
 
