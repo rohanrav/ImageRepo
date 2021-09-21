@@ -1,0 +1,6 @@
+module.exports = {
+  OWN_IMAGES: {
+    QUERY_TYPE_NOT_FOR_SALE: "QUERY_TYPE_NOT_FOR_SALE",
+    QUERY_TYPE_FOR_SALE: "QUERY_TYPE_FOR_SALE",
+  },
+};
